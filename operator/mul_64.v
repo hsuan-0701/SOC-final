@@ -12,7 +12,7 @@
 // Create Date: 5/2025
 // Features & Functions:
 // . mode:  0 for 53bit multiplication 、 1 for  16bit multiplication (4 pairs)
-// .
+// . Use mul_16.v as instanse(include 16bit multiplier、 8bit CLA 、 FA 、 HA)
 // ============================================================================================================================================================================
 // Revision History:
 // Date         by      Version     Change Description
