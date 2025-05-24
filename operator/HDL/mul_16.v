@@ -861,9 +861,11 @@ module mul_16 (
         end
     end
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                                                         Use carry lookahead to calculate result                                                                  //
+//                                                             Use carry lookahead to calculate result (prediiction)                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    assign logic_one       = 1'b1;
+    assign logic_zero      = 1'b0;
     
     assign last_lv_A = { stage_3_33,
                 stage_3_32[0],
@@ -931,43 +933,6 @@ module mul_16 (
                 7'd0
                 };
 
-        always @(posedge clk or negedge rst_n) begin
-            if(!rst_n)begin
-                stage_4_0       <= 7'd0;
-                stage_4_1       <= 9'd0;
-                stage_4_2_zero  <= 9'd0;
-                stage_4_2_one   <= 9'd0;
-                stage_4_3_zero  <= 9'd0;
-                stage_4_3_one   <= 9'd0;
-                stage_4_4_zero  <= 2'd0;
-                stage_4_4_one   <= 2'd0;
-                stage_4_v       <= zero;
-            end else begin
-                stage_4_0       <= last_lv_A[6:0];
-                stage_4_1       <= result_15_7;
-                
-                stage_4_2_zero  <= result_23_15_zero;
-                stage_4_2_one   <= result_23_15_one;
-                
-                stage_4_3_zero  <= result_31_23_zero;
-                stage_4_3_one   <= result_31_23_one;
-
-                stage_4_4_zero  <= result_32_31_zero;
-                stage_4_4_one   <= result_32_31_one;
-                stage_4_v       <= stage_3_v;
-            end
-        end
-
-        assign logic_one       = 1'b1;
-        assign logic_zero      = 1'b0;
-        assign r0         = stage_4_0[6:0];                                     // * [6:0]   of result
-        assign r1         = stage_4_1[8:0];                                     // * [14:7]  of result        
-        assign r2         = (r1[8])?          stage_4_2_one : stage_4_2_zero;   // * [22:15] of result
-        assign r3         = (r2[8])?          stage_4_3_one : stage_4_3_zero;   // * [30:23] of result
-        assign r4         = (r3[8])?          stage_4_4_one : stage_4_4_zero;   // * [32:31] of result
-        assign result     = {r4[1:0] , r3[7:0] , r2[7:0] , r1[7:0] , r0[6:0]};
-        assign out_valid  = stage_4_v;
-
         CLA_8 CLA1(
                     .Cin(logic_zero),
                     .A  (last_lv_A[14:7]),
@@ -998,9 +963,48 @@ module mul_16 (
 
         assign result_32_31_one  = last_lv_A[32:31] + last_lv_B[32:31] + 2'd1;
         assign result_32_31_zero = last_lv_A[32:31] + last_lv_B[32:31] + 2'd0;
-                                            
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                       pipe line stage_4                                                                                          //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
 
-      
+        always @(posedge clk or negedge rst_n) begin
+            if(!rst_n)begin
+                stage_4_0       <= 7'd0;
+                stage_4_1       <= 9'd0;
+                stage_4_2_zero  <= 9'd0;
+                stage_4_2_one   <= 9'd0;
+                stage_4_3_zero  <= 9'd0;
+                stage_4_3_one   <= 9'd0;
+                stage_4_4_zero  <= 2'd0;
+                stage_4_4_one   <= 2'd0;
+                stage_4_v       <= zero;
+            end else begin
+                stage_4_0       <= last_lv_A[6:0];
+                stage_4_1       <= result_15_7;
+                
+                stage_4_2_zero  <= result_23_15_zero;
+                stage_4_2_one   <= result_23_15_one;
+                
+                stage_4_3_zero  <= result_31_23_zero;
+                stage_4_3_one   <= result_31_23_one;
+
+                stage_4_4_zero  <= result_32_31_zero;
+                stage_4_4_one   <= result_32_31_one;
+                stage_4_v       <= stage_3_v;
+            end
+        end                                      
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                            result select                                                                                         //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+        assign r0         = stage_4_0[6:0];                                     // * [6:0]   of result
+        assign r1         = stage_4_1[8:0];                                     // * [14:7]  of result        
+        assign r2         = (r1[8])?          stage_4_2_one : stage_4_2_zero;   // * [22:15] of result
+        assign r3         = (r2[8])?          stage_4_3_one : stage_4_3_zero;   // * [30:23] of result
+        assign r4         = (r3[8])?          stage_4_4_one : stage_4_4_zero;   // * [32:31] of result
+        assign result     = {r4[1:0] , r3[7:0] , r2[7:0] , r1[7:0] , r0[6:0]};
+        assign out_valid  = stage_4_v;
+
+
 
 endmodule
 
