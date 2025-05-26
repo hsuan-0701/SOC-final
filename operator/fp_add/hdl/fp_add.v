@@ -249,9 +249,27 @@ end
 ////////////////////////////////////////////////////////////////////////////////
 
 
-assign frac_a_add_b = pip2_frac_a + pip2_frac_b;
-assign frac_a_sub_b = pip2_frac_a - pip2_frac_b;
-assign frac_b_sub_a = pip2_frac_b - pip2_frac_a;
+    add_107  add107_01(
+        .in_A( pip2_frac_a  ),
+        .in_B( pip2_frac_b  ),
+        .result( frac_a_add_b )
+    );
+
+    sub_107 sub_107_00(
+        .in_A( pip2_frac_a  ),
+        .in_B( pip2_frac_b  ),
+        .result( frac_a_sub_b )
+    );
+
+    sub_107 sub_107_01(
+        .in_A( pip2_frac_b  ),
+        .in_B( pip2_frac_a  ),
+        .result( frac_b_sub_a )
+    );
+
+// assign frac_a_add_b = pip2_frac_a + pip2_frac_b;
+// assign frac_a_sub_b = pip2_frac_a - pip2_frac_b;
+// assign frac_b_sub_a = pip2_frac_b - pip2_frac_a;
 
 
 always @(*)begin
@@ -433,3 +451,216 @@ assign out_valid  = pip5_v;
 
 endmodule
 
+
+
+
+/////////////////////////////////
+//          8bit CLA           //
+/////////////////////////////////
+
+    module CLA_8(
+        input  wire        Cin,
+        input  wire [7:0]  A,
+        input  wire [7:0]  B,
+        output wire [8:0]  result
+    );
+        reg [7:0] G, P, S;
+        reg [8:0] C;  
+
+        integer i;
+        assign result = {C[8], S};
+
+        always @(*) begin
+            C[1] = G[0] | (P[0] & C[0]);
+            C[2] = G[1] | (P[1] & G[0]) | (P[1] & P[0] & C[0]);
+            C[3] = G[2] | (P[2] & G[1]) | (P[2] & P[1] & G[0]) | (P[2] & P[1] & P[0] & C[0]);
+            C[4] = G[3] | (P[3] & G[2]) | (P[3] & P[2] & G[1]) | (P[3] & P[2] & P[1] & G[0]) | (P[3] & P[2] & P[1] & P[0] & C[0]);
+            C[5] = G[4] | (P[4] & G[3]) | (P[4] & P[3] & G[2]) | (P[4] & P[3] & P[2] & G[1]) | (P[4] & P[3] & P[2] & P[1] & G[0]) | (P[4] & P[3] & P[2] & P[1] & P[0] & C[0]);
+            C[6] = G[5] | (P[5] & G[4]) | (P[5] & P[4] & G[3]) | (P[5] & P[4] & P[3] & G[2]) | (P[5] & P[4] & P[3] & P[2] & G[1]) | (P[5] & P[4] & P[3] & P[2] & P[1] & G[0]) | (P[5] & P[4] & P[3] & P[2] & P[1] & P[0] & C[0]);
+            C[7] = G[6] | (P[6] & G[5]) | (P[6] & P[5] & G[4]) | (P[6] & P[5] & P[4] & G[3]) | (P[6] & P[5] & P[4] & P[3] & G[2]) | (P[6] & P[5] & P[4] & P[3] & P[2] & G[1]) | (P[6] & P[5] & P[4] & P[3] & P[2] & P[1] & G[0]) | (P[6] & P[5] & P[4] & P[3] & P[2] & P[1] & P[0] & C[0]);
+            C[8] = G[7] | (P[7] & G[6]) | (P[7] & P[6] & G[5]) | (P[7] & P[6] & P[5] & G[4]) | (P[7] & P[6] & P[5] & P[4] & G[3]) | (P[7] & P[6] & P[5] & P[4] & P[3] & G[2]) | (P[7] & P[6] & P[5] & P[4] & P[3] & P[2] & G[1]) | (P[7] & P[6] & P[5] & P[4] & P[3] & P[2] & P[1] & G[0]) | (P[7] & P[6] & P[5] & P[4] & P[3] & P[2] & P[1] & P[0] & C[0]);
+        end
+
+        always @(*)begin
+            C[0] = Cin;
+        end
+
+        always @(*) begin
+            for (i = 0; i < 8; i = i + 1) begin
+                G[i] = A[i] & B[i];
+                P[i] = A[i] ^ B[i];
+            end
+        end
+
+        always @(*) begin
+            for (i = 0; i < 8; i = i + 1)begin
+                S[i] = P[i] ^ C[i];
+            end
+        end
+
+    endmodule
+
+/////////////////////////////////
+//        ADDER 107 bit        //
+/////////////////////////////////
+    module add_107 (
+        input [106:0] in_A,
+        input [106:0] in_B,
+        output[106:0] result
+    );
+    wire[111:0]     result_expand;
+    wire[111:0]     in_A_expand;
+    wire[111:0]     in_B_expand;
+    wire[7:0]       part_A[0:13];
+    wire[7:0]       part_B[0:13];
+    wire[8:0]       result_predict_zero[0:13];
+    wire[8:0]       result_predict_one [0:13];
+    wire            logic_one;
+    wire            logic_zero;
+    wire[8:0]       r[0:13];            
+
+    assign logic_one   = 1'b1;
+    assign logic_zero  = 1'b0;
+    assign in_A_expand = {5'd0 ,in_A};
+    assign in_B_expand = {5'd0 ,in_B};
+
+    genvar i;
+    generate
+        for(i=0 ; i<14 ; i=i+1)begin : GEN_PART
+            assign part_A[i] = in_A_expand[(8*i+7):(8*i)] ;
+            assign part_B[i] = in_B_expand[(8*i+7):(8*i)] ;
+        end
+    endgenerate
+        
+        CLA_8 CLA8_zero(
+            .Cin(logic_zero),
+            .A( part_A[0] ),
+            .B( part_B[0] ),
+            .result(result_predict_zero[0])
+        );
+
+    genvar j;
+    generate
+        for(j=1 ; j<14 ; j=j+1)begin : GEN_CLA8
+            CLA_8 CLA8_0(
+                    .Cin(logic_zero),
+                    .A( part_A[j] ),
+                    .B( part_B[j] ),
+                    .result(result_predict_zero[j])
+            );
+            CLA_8 CLA8_1(
+                    .Cin(logic_one),
+                    .A( part_A[j] ),
+                    .B( part_B[j] ),
+                    .result(result_predict_one[j])
+            );
+        end
+    endgenerate
+
+
+    assign r[0] = result_predict_zero[0];
+
+    genvar k ;
+    generate 
+        for(k=1 ; k<14 ; k=k+1)begin : GEN_result
+            assign r[k] = (r[k-1][8])? result_predict_one[k] : result_predict_zero[k];
+        end
+    endgenerate
+
+    assign result_expand    = {r[13][7:0] , r[12][7:0] , r[11][7:0] , r[10][7:0],
+                            r[9][7:0]  , r[8][7:0]  , r[7][7:0]  , r[6][7:0],
+                            r[5][7:0]  , r[4][7:0]  , r[3][7:0]  , r[2][7:0],
+                            r[1][7:0]  , r[0][7:0]  };
+    assign result           = result_expand[106:0];
+
+    endmodule
+
+/////////////////////////////////
+//        subtractor 107bit    //
+/////////////////////////////////
+    module sub_107 (
+        input [106:0] in_A,
+        input [106:0] in_B,
+        output[106:0] result
+    );
+    //* result = in_A - in_B
+    wire[106:0]     in_B_inv;
+    wire[106:0]     logic_one_L;
+    wire[106:0]     in_B_sub;
+    wire[111:0]     result_expand;
+    wire[111:0]     in_A_expand;
+    wire[111:0]     in_B_expand;
+    wire[7:0]       part_A[0:13];
+    wire[7:0]       part_B[0:13];
+    wire[8:0]       result_predict_zero[0:13];
+    wire[8:0]       result_predict_one [0:13];
+    wire            logic_one;
+    wire            logic_zero;
+    wire[8:0]       r[0:13];            
+
+
+    assign in_B_inv     = ~in_B;
+    assign logic_one_L  = {106'd0 , 1'b1};
+
+    assign logic_one   = 1'b1;
+    assign logic_zero  = 1'b0;
+    assign in_A_expand = {5'd0     , in_A};
+    assign in_B_expand = {5'b11111 , in_B_sub };
+
+    add_107 adder(
+        . in_A(in_B_inv ),
+        . in_B(logic_one_L ),
+        . result(in_B_sub)
+    );
+
+
+    genvar i;
+    generate
+        for(i=0 ; i<14 ; i=i+1)begin : GEN_PART
+            assign part_A[i] = in_A_expand[(8*i+7):(8*i)] ;
+            assign part_B[i] = in_B_expand[(8*i+7):(8*i)] ;
+        end
+    endgenerate
+        
+        CLA_8 CLA8_zero(
+            .Cin(logic_zero),
+            .A( part_A[0] ),
+            .B( part_B[0] ),
+            .result(result_predict_zero[0])
+        );
+
+    genvar j;
+    generate
+        for(j=1 ; j<14 ; j=j+1)begin : GEN_CLA8
+            CLA_8 CLA8_0(
+                    .Cin(logic_zero),
+                    .A( part_A[j] ),
+                    .B( part_B[j] ),
+                    .result(result_predict_zero[j])
+            );
+            CLA_8 CLA8_1(
+                    .Cin(logic_one),
+                    .A( part_A[j] ),
+                    .B( part_B[j] ),
+                    .result(result_predict_one[j])
+            );
+        end
+    endgenerate
+
+
+    assign r[0] = result_predict_zero[0];
+
+    genvar k ;
+    generate 
+        for(k=1 ; k<14 ; k=k+1)begin : GEN_result
+            assign r[k] = (r[k-1][8])? result_predict_one[k] : result_predict_zero[k];
+        end
+    endgenerate
+
+    assign result_expand    = {r[13][7:0] , r[12][7:0] , r[11][7:0] , r[10][7:0],
+                            r[9][7:0]  , r[8][7:0]  , r[7][7:0]  , r[6][7:0],
+                            r[5][7:0]  , r[4][7:0]  , r[3][7:0]  , r[2][7:0],
+                            r[1][7:0]  , r[0][7:0]  };
+    assign result           = result_expand[106:0];
+
+    endmodule
