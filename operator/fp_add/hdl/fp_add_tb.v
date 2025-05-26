@@ -12,14 +12,14 @@ module fp_add_tb
     reg             rst_n;
 
 
-    FLOAT_ADD fp_add_DUT(
-        .num1 (A),
-        .num2 (B),
+    fp_add fp_add_DUT(
+        .in_A (A),
+        .in_B (B),
         .clk (clk),
-        .rstn(rst_n),
-        .valid(in_valid),
+        .rst_n(rst_n),
+        .in_valid(in_valid),
         .result(result),
-        .ready(out_valid)
+        .out_valid(out_valid)
     );
 
 
@@ -35,7 +35,7 @@ module fp_add_tb
         end
     end
 
-    integer timeout = (100000);
+    integer timeout = (1000000);
     initial begin
         while(timeout > 0) begin
             @(posedge clk);
@@ -61,9 +61,9 @@ module fp_add_tb
     integer Din_a , Din_b ,Gin;
     integer a_in ,b_in ,g_in;
     integer m,n;
-    reg[63:0]   in_A_list[0:999];
-    reg[63:0]   in_B_list[0:999];
-    reg[63:0]  golden_list[0:999];
+    reg[63:0]   in_A_list[0:49999];
+    reg[63:0]   in_B_list[0:49999];
+    reg[63:0]  golden_list[0:49999];
 
 // set pattern //
     initial begin
@@ -74,7 +74,7 @@ module fp_add_tb
             $display("[ERROR] Failed to open pattern file....");
             $finish;
         end else begin 
-            for(m=0 ; m<1000 ;m=m+1)begin
+            for(m=0 ; m<50000 ;m=m+1)begin
                 a_in = $fscanf(Din_a , "%h" , in_A_list[m]);
                 b_in = $fscanf(Din_b , "%h" , in_B_list[m]);
                 g_in = $fscanf(Gin   , "%h" , golden_list[m]);
@@ -92,7 +92,7 @@ module fp_add_tb
         @(posedge clk);
         @(posedge clk);
         @(posedge clk);
-        for(i=0 ;i<1000 ; i=i+1)begin
+        for(i=0 ;i<50000 ; i=i+1)begin
             dat_in(in_A_list[i] , in_B_list[i]);
         end
     end
@@ -106,7 +106,7 @@ module fp_add_tb
         wait(rst_n == 0);
         wait(rst_n == 1);
         @(posedge clk);
-        for(j=0 ; j<1000;j=j+1)begin
+        for(j=0 ; j<50000;j=j+1)begin
             out_check(golden_list[j],j);
         end
         if(error==1)begin
