@@ -42,6 +42,7 @@ assign  part_5   = (data_chk[2]) ? part_4[(pFIFTH_WIDTH-1 ):pSIXTH_WIDTH]   : pa
 assign  part_6   = (data_chk[1]) ? part_5[(pSIXTH_WIDTH-1) :pSEVENTH_WIDTH] : part_5[(pSEVENTH_WIDTH-1):0];		
 
 
-assign 	position = (|A) ? {{(pCOUNTER_WIDTH-7){1'b0}}, ~data_chk} : {(pCOUNTER_WIDTH){1'b1}} ;
+assign 	position = (|A) ? {{(pCOUNTER_WIDTH-7){1'b0}}, ~data_chk} : {{(pCOUNTER_WIDTH-8){1'b0}} , 8'd128} ;
+
 
 endmodule
