@@ -1,6 +1,6 @@
 import random
 
-# 開啟三個檔案
+
 with open("A.dat", "w") as f_a, open("B.dat", "w") as f_b, open("GOLDEN.dat", "w") as f_g:
     for i in range(10000):
         A = random.randint(0, 2722258935367507707706996859454145691647)  # 131-bit A
