@@ -1,3 +1,44 @@
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+// MIT License
+// ---
+// Copyright © 2023 Company
+// .... Content of the license
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ============================================================================================================================================================================
+// Module Name : fp_add
+// Author : Jesse 、hsuanjung,Lo
+// Create Date: 5/2025
+// Features & Functions:
+// . To do add operation of IEEE754 double precisoin floating point. 
+// .
+// ============================================================================================================================================================================
+// Revision History:
+// Date           by            Version       Change Description
+// 2025.5.26    hsuanjung,Lo      2.0         fix rounding bug
+// 2025.5.26    hsuanjung,Lo      3.0         fix exponent bug in first normalization
+//
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//==================================================================================================================================================================================
+//
+//  IEEE 754 double precision floating point form(64bit width)
+//     1bit     11bit       52bit
+//   | sign |  exponent | fraction |  
+//
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// * Asserted in_valid high to feed valid data ,and return valid result with out_valid
+//
+// * Waveform：    
+//      clk       >|      |      |      |      |      |      |      |       |       |
+//      in_valid  >________/-------------\______________________________________________ * input valid asserted high for data input
+//      in_A      >  XX   |  A1  |  A2  |           - XX -                               * data input(with IEEE754 double precision floating point format )
+//      in_B      >  XX   |  B1  |  B2  |           - XX -                               * data input(with IEEE754 double precision floating point format )
+//      out_valid >___________________________________________/--------------\________   * output valid asserted high for data output
+//      result    >|                    xx                   |  r0  |  r1   |   xx  |    *  
+//
+//===================================================================================================================================================================================
+
 module fp_add#(
     parameter pDATA_WIDTH = 64,
     parameter pEXP_WIDTH  = 11, 
@@ -91,9 +132,10 @@ wire[(LOD_WIDTH-1):0]               frac_abs_expand;
 wire[(pADDER_WIDTH-1):0]            frac_normal_0;
 wire[(pEXP_WIDTH-1)  :0]            exp_normal_0 ;
 wire                                frac_sign;
-wire signed[(pEXP_WIDTH-1):0]       shift;
-wire signed[(pEXP_WIDTH-1):0]       shift_amount;
-wire signed[(pEXP_WIDTH-1):0]       maximum_shift;
+wire[(pEXP_WIDTH-1):0]              shift;
+wire[(pEXP_WIDTH-1):0]              shift_amount;
+wire[(pEXP_WIDTH-1):0]              shift_frac;
+wire[(pEXP_WIDTH-1):0]              maximum_shift;
 //============================= pipeline stage4 ==============================//
 reg                                 pip4_lsb;
 reg                                 pip4_sticky;
@@ -330,14 +372,20 @@ assign frac_sign     = pip3_frac_result[pADDER_WIDTH-1];                        
 assign frac_abs      = (frac_sign)?  (((~ pip3_frac_result) + {{(pADDER_WIDTH-1){1'b0}} , 1'b1})) : (pip3_frac_result );          // * pip3_frac_result is signed we need to transfer it to absolute value !
 
 
-assign frac_normal_0 = (frac_abs[(pADDER_WIDTH-1):0] << shift_amount) >>1 ;                                                                             // * fisrt time normalize
-assign exp_normal_0  = (shift_amount <= maximum_shift)? (pip3_exp - shift_amount+1) : {(pEXP_WIDTH){1'b0}};                       // * first time normalize .If all zero ,replace exp = 0000(denormal type).
+// *assign frac_normal_0 = (frac_abs[(pADDER_WIDTH-1):0] << shift_amount) >>1 ;                                                       // * fisrt time normalize
+// *assign exp_normal_0  = (shift_amount <= maximum_shift)? (pip3_exp - shift_amount+1) : {(pEXP_WIDTH){1'b0}};                       // * first time normalize .If all zero ,replace exp = 0000(denormal type).
+assign maximum_shift = pADDER_WIDTH-1;                                                                                          
+// *assign shift_amount  = (shift >= pip3_exp)? (pip3_exp+1) : shift -1;
 
-assign maximum_shift = pADDER_WIDTH-2;                                                                                          
+assign frac_normal_0 =   (shift > 1)?       (frac_abs << shift_amount) : (frac_abs >> 1) ;
+
+assign exp_normal_0  =  (shift < pADDER_WIDTH)? ( (shift > 1)?    (pip3_exp - shift_amount)  : (pip3_exp + 1) ): {(pEXP_WIDTH){1'b0}}  ;
 
 
-assign shift_amount  = (shift >= pip3_exp)? pip3_exp : shift -1;
+assign shift_amount  = (shift_frac > pip3_exp)?       pip3_exp  : shift_frac ;
+assign shift_frac    = (shift > 1)?                 (shift - 2) : {(pEXP_WIDTH){1'b0}} ;
 
+// use -> wire [(pEXP_WIDTH-1) : 0] shift_frac;
 
 assign frac_abs_expand = {frac_abs , {(LOD_WIDTH-pADDER_WIDTH){1'b0}}};
 
@@ -424,6 +472,7 @@ always @(*) begin
         round_op = NO_ROUNDING;
     end
 end
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
