@@ -38,7 +38,7 @@
 //      exp_A     >|  xx  |  a0  |  a1  |           xx                                               * input exponent A
 //      exp_B     >|  xx  |  b0  |  b1  |           xx                                               * input exponent B
 //      out_valid >_________________________________________________________/-------------\_______   * output valid asserted high for data output
-//      exp_o     >|                         xx                            |  e0  |  e1  |  xx  |    * output exponent as 13bit signed real value(no bias)
+//      exp_o     >|                         xx                            |  e0  |  e1  |  xx  |    * output exponent as 13bit signed value.
 //      out_inf   >________________________________________________________________/------\_______   * while the input data contain denormal case(infinite case), asserted high.
 //===================================================================================================================================================================================
 
@@ -87,13 +87,11 @@ module fmul_exp #(
 
 //----------------------- pipeline stage 1 ----------------------------------------------------------------------------------//
     reg                                     pip1_v;
-//    reg                                     pip1_zero_case;
     reg [(pEXP_WIDTH-1):0]                  pip1_exp_a;
     reg [(pEXP_WIDTH-1):0]                  pip1_exp_b;
 //----------------------- pipeline stage 2 -----------------------------------------------------------------------------------//
     reg                                     pip2_v;
     reg                                     pip2_inf;
-//    reg                                     pip2_zero_case;
     reg [(pEXP_WIDTH):0]                    pip2_exp;
 //-------------------- EXP add & subnormal detect ------------------------------------------------------------------------------//
     wire                                    inf_a;
@@ -118,12 +116,10 @@ module fmul_exp #(
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n)begin
         pip1_v         <= 1'b0;
-//        pip1_zero_case <= 1'b0;
         pip1_exp_a     <= {(pEXP_WIDTH){1'b0}};
         pip1_exp_b     <= {(pEXP_WIDTH){1'b0}};
     end else begin
         pip1_v         <= in_valid;
-//        pip1_zero_case <= zero_case;
         pip1_exp_a     <= exp_A;
         pip1_exp_b     <= exp_B;
     end
@@ -147,13 +143,11 @@ add_11 add_11_0( .in_A( pip1_exp_a ) , .in_B( pip1_exp_b ) , .result( exp_add ))
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n)begin
         pip2_v          <= 1'b0;
-//        pip2_zero_case  <= 1'b0;
         pip2_inf        <= 1'b0;
         pip2_exp        <= {(pEXP_WIDTH+1){1'b0}};
     end else begin
         pip2_v          <= pip1_v;
         pip2_inf        <= (inf_a | inf_b);
-//        pip2_zero_case  <= pip1_zero_case;
         pip2_exp        <= exp_add[(pEXP_WIDTH):0];
     end
 end
@@ -163,10 +157,8 @@ end
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------------------------------------
-// assign exp_normalized_0 = (exp_real[pEXP_WIDTH] || exp_real[pEXP_WIDTH])?  INF_EXP : exp_real[(pEXP_WIDTH-1):0] ;
-// assign exp_normalized_1 = (pip2_zero_case)? ZERO_EXP : exp_normalized_0;
 //
-// * can't directly add the exp result , weknow that real value of exponent is exp + bias
+// * can't directly add the exp result , weknow that real value of exponent is exp - bias
 // * so we need to sub the bias hehre.
 //
 // * step1. sign extension exp_expand   
