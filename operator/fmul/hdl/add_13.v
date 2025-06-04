@@ -1,10 +1,10 @@
 /////////////////////////////////
-//         ADDER 11 bit        //
+//         ADDER 13 bit        //
 /////////////////////////////////
-    module add_11 (
-        input [10:0] in_A,
-        input [10:0] in_B,
-        output[11:0] result
+    module add_13 (
+        input [12:0] in_A,
+        input [12:0] in_B,
+        output[13:0] result
     );
     wire[15:0]      result_expand;
     wire[15:0]      in_A_expand;
@@ -19,8 +19,8 @@
 
     assign logic_one   = 1'b1;
     assign logic_zero  = 1'b0;
-    assign in_A_expand = {5'd0 ,in_A};
-    assign in_B_expand = {5'd0 ,in_B};
+    assign in_A_expand = {3'd0 ,in_A};
+    assign in_B_expand = {3'd0 ,in_B};
 
     genvar i;
     generate
@@ -66,6 +66,6 @@
     endgenerate
 
     assign result_expand    = { r[1][7:0]  , r[0][7:0]  };
-    assign result           = result_expand[11:0];
+    assign result           = result_expand[13:0];
 
     endmodule
