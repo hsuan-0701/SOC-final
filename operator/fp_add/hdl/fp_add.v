@@ -17,7 +17,7 @@
 // Date           by            Version       Change Description
 // 2025.5.26    hsuanjung,Lo      2.0         fix rounding bug
 // 2025.5.26    hsuanjung,Lo      3.0         fix exponent bug in first normalization
-//
+// 2025.6.1     hsuanjung,lo      4.0         change the included module name "LOD" => "LOD_128" 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //==================================================================================================================================================================================
@@ -389,7 +389,7 @@ assign shift_frac    = (shift > 1)?                 (shift - 2) : {(pEXP_WIDTH){
 
 assign frac_abs_expand = {frac_abs , {(LOD_WIDTH-pADDER_WIDTH){1'b0}}};
 
-LOD #(LOD_WIDTH , pEXP_WIDTH) compute_zero_num(.A(frac_abs_expand) , .position(shift));
+LOD_128 #(LOD_WIDTH , pEXP_WIDTH) compute_zero_num(.A(frac_abs_expand) , .position(shift));
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 assign lsb           = frac_normal_0[(pADDER_WIDTH-pFRAC_WIDTH-3)];
