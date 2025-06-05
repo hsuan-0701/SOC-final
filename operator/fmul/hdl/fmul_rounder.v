@@ -8,14 +8,14 @@
 // ============================================================================================================================================================================
 // Module Name : fmul_rounder
 // Author : Hsuan Jung,Lo
-// Create Date: 5/2025
+// Create Date: 6/2025
 // Features & Functions:
-// . To round and normalize the floating point mul result. 
+// . To round and normalize the floating point mul result into IEEE 754 double precision format. 
 // .
 // ============================================================================================================================================================================
 // Revision History:
-// Date         by      Version     Change Description
-//  
+// Date         by              Version              Change Description
+// 2025.6.5   hsuan_jung,lo       2.0       fix rounding position of lsb and fix pattern problem
 // 
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -29,12 +29,12 @@
 // * Waveform：    
 //      clk       >|      |      |      |      |      |      |      |
 //      in_valid  >________/-------------\_____________________________   * input valid asserted high for data input
-//      frac_i    >   xx  |  f0  |  f1  |           xx                    * input fraction
-//      exp_i     >   xx  |  e0  |  e1  |           xx                    * input exponent
+//      frac_i    >   xx  |  f0  |  f1  |           xx                    * input fraction(mul result from wallace tree)
+//      exp_i     >   xx  |  e0  |  e1  |           xx                    * input exponent(exponent result form fmul_exp)
 //      inf_case  >_______________/------\____________________________    * while input data contain infinite number ,asserted high.
-//      out_valid >______________________/--------------\______________   * output valid asserted high for data output
-//      frac_o    >|         xx         |  F0  |  F1  |     xx      |     * output fraction (normalized)
-//      exp_o     >|         xx         |  E0  |  INF |     xx      |     * output exponent (normalized)
+//      out_valid >_____________________________/--------------\_______   * output valid asserted high for data output
+//      frac_o    >|         xx                |  F0  |  F1  |   xx  |    * output fraction (normalized into IEEE 754 format)
+//      exp_o     >|         xx                |  E0  |  INF |   xx  |    * output exponent (normalized into IEEE 754 format)
 //
 //===================================================================================================================================================================================
 
@@ -55,6 +55,51 @@
 //                                                    |___|                                       |___|
 //====================================================================================================================================================================================
 
+//=====================================================================================================================================================================================-//
+//  First we normalize fraction and exponent ,and then round the fraction .
+// * Step 1.  first time normalize the exponent       
+//                               2bit  104bit
+//    106bit frac_i structure :  xx  . xxxxx
+//                                   ^
+//                                 float point
+//
+// * so if leading of frac_i = 1 , we normalize exp into exp_i - 1 
+// * others don't change.
+//
+// 
+// * Step 2.  get LSB 、 guard_bit 、 round_bit from frac_i.
+//
+//           53bit         1bit      1bit      ...
+//     |     FRAC     |   GURAD  |  Round  |  sticky  | 
+//
+// * Step 3.  rounding frac to nearest even (with sticky)
+//                              53bit
+//          frac_rounded  :  |  FRAC  |    
+//
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//  Second we normalize the rounded result and exponent
+//
+// * Step 1. find leading one position of fraction(extense the frac into 64bit to fit LOD_width)
+//          
+//        53bit          53bit    11bit
+//     |  FRAC  |  =>  |  FRAC  |  000... |
+//
+//  *Step 2. shift FRAC (maximun shift is value of exponent + 1023) 
+//
+//
+// * Step 3. normaliztion into IEEE 754 foramt 52bit fraction(1 bit hidden)
+//
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------/
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// At the end we check the denormal case (infinite number or zero number)
+//
+//    output structure :
+//                         FRAC  :    |  52 bit  |  one bit hidden , as IEEE 754 double precision floating point format.
+//                      EXPONENT :    |  11 bit  |
+//================================================================================================================================================================================//
 module fmul_rounder#(
     parameter pDIN_WIDTH = 106,
     parameter pDo_WIDTH  = 52,
@@ -138,28 +183,7 @@ module fmul_rounder#(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                         First Normalize and rounding                                                   //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------------------------------------------------//
-//
-// * Step 1.  first time normalize the exponent       
-//                               2bit  104bit
-//    106bit frac_i structure :  xx  . xxxxx
-//                                   ^
-//                                 float point
-//
-// * so if leading of frac_i = 1 , we normalize exp into exp_i - 1 
-// * others don't change.
-//
-// 
-// * Step 2.  get LSB 、 guard_bit 、 round_bit from frac_i.
-//
-//           53bit         1bit      1bit      ...
-//     |     FRAC     |   GURAD  |  Round  |  sticky  | 
-//
-// * Step 3.  rounding frac to nearest even (with sticky)
-//                              53bit
-//          frac_rounded  :  |  FRAC  |    
-//
-//-------------------------------------------------------------------------------------------------------------------------//
+
     assign zero_case        = ~ (|frac_i);
 //------------------------------------------ first normalize  & rounding --------------------------------------------------//
     assign frac             = (frac_i[pDIN_WIDTH-1]) ? frac_i[(pDIN_WIDTH-1):(pDIN_WIDTH - pFRAC_WIDTH)] : frac_i[(pDIN_WIDTH-2) : (pDIN_WIDTH - pFRAC_WIDTH - 1) ]; 
@@ -210,18 +234,7 @@ end
 //                                            Second Normalize (part 1)                                                   //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//-----------------------------------------------------------------------------------------------------------------------//
-// * Step 1. find leading one position of fraction(extense the frac into 64bit to fit LOD_width)
-//          
-//        53bit          53bit    11bit
-//     |  FRAC  |  =>  |  FRAC  |  000... |
-//
-//  *Step 2. shift FRAC (maximun shift is value of exponent + 1023) 
-//
-//
-// * Step 2. normaliztion into IEEE 754 foramt 52bit fraction(1 bit hidden)
-//
-//--------------------------------------------------------------------------------------------------------------------------//
+
 
 
 assign frac_expand = {  frac_stage_0 , {(pLOD_WIDTH-pFRAC_WIDTH){1'b0}} };
