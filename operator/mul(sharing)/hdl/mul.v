@@ -50,7 +50,7 @@
 //     ==> result_c = { (a_re * b_re) - (a_im * b_im)  ,  (a_re * b_im) + (a_im * b_re) } ;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 module mul #(
-    parameter pDATA_WIDTH = 128 ;
+    parameter pDATA_WIDTH = 128 
 ) (
     input [(pDATA_WIDTH-1) : 0]     in_A,
     input [(pDATA_WIDTH-1) : 0]     in_B,
@@ -58,10 +58,11 @@ module mul #(
     input                           clk ,
     input                           rst_n,
     input                           in_valid,
-    output[(pDATA_WIDTH-1)  :0]     result_c;  
-    output[(pDATA_WIDTH*2-1)  :0]   result_int;
-    output                          out_valid;
+    output[(pDATA_WIDTH-1)  :0]     result_c,  
+    output[(pDATA_WIDTH*2-1)  :0]   result_int,
+    output                          out_valid
 );
+localparam NaN_num              = 64'h7FF0_0000_0000_0001;
 //---------------------------------------------------------------------------------------------------------------------//
 localparam pFP_WIDTH            = 64 ;
 localparam pMANTISSA_WIDTH      = 52 ;
@@ -98,9 +99,8 @@ wire [(pFP_WIDTH-1) : 0]            br_add_bi    ;
 wire [(pFP_WIDTH-1) : 0]            br_sub_bi    ;
 wire [2             : 0]            fp_add_ready ;
 // * other operand (store in shift reg)
-reg  [(pDATA_WIDTH-1): 0]           a_reg     [0:(FP_ADD_LATENCY-1)];
-reg  [(pFP_WIDTH-1)  : 0]           b_im_reg  [0:(FP_ADD_LATENCY-1)];
-
+reg  [(pDATA_WIDTH-1): 0]           a_reg           [0:(FP_ADD_LATENCY-1)];
+reg  [(pFP_WIDTH-1)  : 0]           b_im_reg        [0:(FP_ADD_LATENCY-1)];
 wire [(pFP_WIDTH-1)  : 0]           a_re_r;
 wire [(pFP_WIDTH-1)  : 0]           a_im_r;
 wire [(pFP_WIDTH-1)  : 0]           b_im_r;
@@ -121,14 +121,22 @@ wire                                inf_C ;
 wire                                exp_ready_A;
 wire                                exp_ready_B;
 wire                                exp_ready_C;
-// * sign bit of fp operand
+// * Other fp operand
 wire                                sign_A ;
 wire                                sign_B ;
 wire                                sign_C ;
+wire                                NaN_a;
+wire                                NaN_b;
+wire                                NaN_c;
+reg                                 NaN_a_reg  [0 :(EXP_OP_LATENCY + ROUNDER_LATENCY-1)];
+reg                                 NaN_b_reg  [0 :(EXP_OP_LATENCY + ROUNDER_LATENCY-1)];
+reg                                 NaN_c_reg  [0 :(EXP_OP_LATENCY + ROUNDER_LATENCY-1)];
 reg                                 sign_A_reg [0 :(EXP_OP_LATENCY + ROUNDER_LATENCY-1)];
 reg                                 sign_B_reg [0 :(EXP_OP_LATENCY + ROUNDER_LATENCY-1)];
 reg                                 sign_C_reg [0 :(EXP_OP_LATENCY + ROUNDER_LATENCY-1)];
+
 //---------------------------------------- mul_16 array  ---------------------------------------------------------------//
+
 wire[2:0]                           array_in_valid   ;
 wire[2:0]                           array_out_valid  ;
 // * hidden bit of fp_mul operand
@@ -242,6 +250,7 @@ assign a_im_neg   = { ~in_A[pFP_WIDTH-1] , in_A[(pFP_WIDTH-2) : 0]};  // * inv t
 assign b_im_neg   = { ~in_B[pFP_WIDTH-1] , in_B[(pFP_WIDTH-2) : 0]};  // * inv the sign bit of b_re ( -b_re ).
 
 
+
 fp_add   fp_add_01( .in_A( b_re ) , .in_B( b_im )     , .clk( clk ) , .rst_n( rst_n )  , .in_valid( cmul_valid )  , .result( br_add_bi ) , .out_valid( fp_add_ready[0] ));
 fp_add   fp_add_02( .in_A( a_re ) , .in_B( a_im_neg ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( cmul_valid )  , .result( ar_sub_ai ) , .out_valid( fp_add_ready[1] ));
 fp_add   fp_add_03( .in_A( b_re ) , .in_B( b_im_neg ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( cmul_valid )  , .result( br_sub_bi ) , .out_valid( fp_add_ready[2] ));
@@ -252,24 +261,24 @@ integer i ;
 always @(posedge clk or negedge rst_n)begin
     if(!rst_n)begin
         for(i=0 ; i< FP_ADD_LATENCY ; i=i+1)begin        
-            a_reg   [i]  <= {(pDATA_WIDTH){1'b0}} ;
-            b_im_reg[i]  <= {(pFP_WIDTH){1'b0}}   ;
+            a_reg   [i]         <= {(pDATA_WIDTH){1'b0}} ;
+            b_im_reg[i]         <= {(pFP_WIDTH){1'b0}}   ;
         end
     end else begin
-        a_reg   [0]  <= in_A  ;
-        b_im_reg[0]  <= b_im  ;
+        a_reg   [0]         <= in_A  ;
+        b_im_reg[0]         <= b_im  ;
         for(i=1 ; i< FP_ADD_LATENCY ; i=i+1)begin        
-            a_reg   [i]  <= a_reg   [i-1] ;
-            b_im_reg[i]  <= b_im_reg[i-1] ;
+            a_reg   [i]         <= a_reg   [i-1] ;
+            b_im_reg[i]         <= b_im_reg[i-1] ;
         end
 
     end
 end
 
 // * specify a_re 、 a_im 、 b_re 、 b_im from last reg of a_reg、 b_reg
-assign a_re_r = a_reg[FP_ADD_LATENCY-1][(pFP_WIDTH*2-1) : pFP_WIDTH];
-assign a_im_r = a_reg[FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
-assign b_im_r = b_reg[FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
+assign a_re_r = a_reg   [FP_ADD_LATENCY-1][(pFP_WIDTH*2-1) : pFP_WIDTH];
+assign a_im_r = a_reg   [FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
+assign b_im_r = b_im_reg[FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,9 +299,11 @@ assign b_im_r = b_reg[FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
 localparam mul_array_FFT = 1'b1;
 localparam mul_array_NTT = 1'b0;
 
-assign array_in_valid[0]  = (mode == INT_MUL)? in_valid : fp_add_ready[0] : ;
-assign array_in_valid[1]  = (mode == INT_MUL)? in_valid : fp_add_ready[1] : ;
-assign array_in_valid[2]  = (mode == INT_MUL)? in_valid : fp_add_ready[2] : ;
+
+
+assign array_in_valid[0]  = (mode == INT_MUL)? in_valid : fp_add_ready[0]  ;
+assign array_in_valid[1]  = (mode == INT_MUL)? in_valid : fp_add_ready[1]  ;
+assign array_in_valid[2]  = (mode == INT_MUL)? in_valid : fp_add_ready[2]  ;
 
 assign hidden_br_add_bi  = |(br_add_bi [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]) ;
 assign hidden_a_im       = |(a_re_r    [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]); 
@@ -351,7 +362,7 @@ wallace_131 Wallace_tree_a(
     .mul_result_20( mul_16_result_a2[0] ) , .mul_result_21( mul_16_result_a2[1] ) , .mul_result_22( mul_16_result_a2[2] ) , .mul_result_23( mul_16_result_a2[3] ) ,
     .mul_result_30( mul_16_result_a3[0] ) , .mul_result_31( mul_16_result_a3[1] ) , .mul_result_32( mul_16_result_a3[2] ) , .mul_result_33( mul_16_result_a3[3] ) ,  
 //------------------------------ data input of add operation(131bit add) -----------------------------------------------//
-    .in_A( wallace_in ),                  , .in_B( wallace_in )           
+    .in_A( wallace_in )                  , .in_B( wallace_in )           
 );
 
 wallace_131 Wallace_tree_b(
@@ -361,7 +372,7 @@ wallace_131 Wallace_tree_b(
     .mul_result_10( mul_16_result_b1[0] ) , .mul_result_11( mul_16_result_b1[1] ) , .mul_result_12( mul_16_result_b1[2] ) , .mul_result_13( mul_16_result_b1[3] ) ,    
     .mul_result_20( mul_16_result_b2[0] ) , .mul_result_21( mul_16_result_b2[1] ) , .mul_result_22( mul_16_result_b2[2] ) , .mul_result_23( mul_16_result_b2[3] ) ,
     .mul_result_30( mul_16_result_b3[0] ) , .mul_result_31( mul_16_result_b3[1] ) , .mul_result_32( mul_16_result_b3[2] ) , .mul_result_33( mul_16_result_b3[3] ) ,  
-    .in_A( wallace_in ),                  , .in_B( wallace_in )           
+    .in_A( wallace_in )                  , .in_B( wallace_in )           
 );
 
 wallace_131 Wallace_tree_c(
@@ -371,7 +382,7 @@ wallace_131 Wallace_tree_c(
     .mul_result_10( mul_16_result_c1[0] ) , .mul_result_11( mul_16_result_c1[1] ) , .mul_result_12( mul_16_result_c1[2] ) , .mul_result_13( mul_16_result_c1[3] ) ,    
     .mul_result_20( mul_16_result_c2[0] ) , .mul_result_21( mul_16_result_c2[1] ) , .mul_result_22( mul_16_result_c2[2] ) , .mul_result_23( mul_16_result_c2[3] ) ,
     .mul_result_30( mul_16_result_c3[0] ) , .mul_result_31( mul_16_result_c3[1] ) , .mul_result_32( mul_16_result_c3[2] ) , .mul_result_33( mul_16_result_c3[3] ) ,  
-    .in_A( wallace_in ),                  , .in_B( wallace_in )           
+    .in_A( wallace_in )                  , .in_B( wallace_in )           
 );
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -384,6 +395,10 @@ assign exp_B0 = ar_sub_ai [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];
 assign exp_B1 = b_im_r    [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * exp of b_im              
 assign exp_C0 = br_sub_bi [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * exp of (b_re - b_im)
 assign exp_C1 = a_re_r    [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * exp of a_re
+
+assign NaN_a  = (state == C_MUL)?  ((& exp_A0) & (|br_add_bi [(pMANTISSA_WIDTH-1):0])) | ((& exp_A1) & (|a_im_r [(pMANTISSA_WIDTH-1):0])) : 1'b0;
+assign NaN_b  = (state == C_MUL)?  ((& exp_B0) & (|ar_sub_ai [(pMANTISSA_WIDTH-1):0])) | ((& exp_B1) & (|b_im_r [(pMANTISSA_WIDTH-1):0])) : 1'b0;
+assign NaN_c  = (state == C_MUL)?  ((& exp_C0) & (|br_sub_bi [(pMANTISSA_WIDTH-1):0])) | ((& exp_C1) & (|a_re_r [(pMANTISSA_WIDTH-1):0])) : 1'b0;
 
 fmul_exp  exponent_op_A( .clk( clk ) , .rst_n( rst_n ), .in_valid( fp_add_ready[0] ), .exp_A( exp_A0 ), .exp_B( exp_A1 ),  .exp_o( exp_A_out ), .out_inf( inf_A ) , .out_valid( exp_ready_A ));
 fmul_exp  exponent_op_B( .clk( clk ) , .rst_n( rst_n ), .in_valid( fp_add_ready[1] ), .exp_A( exp_B0 ), .exp_B( exp_B1 ),  .exp_o( exp_B_out ), .out_inf( inf_B ) , .out_valid( exp_ready_B ));
@@ -399,15 +414,24 @@ always @(posedge clk or negedge rst_n) begin
             sign_A_reg[i] <= 1'b0;
             sign_B_reg[i] <= 1'b0;
             sign_C_reg[i] <= 1'b0;
+            NaN_a_reg [i] <= 1'b0;
+            NaN_b_reg [i] <= 1'b0;
+            NaN_c_reg [i] <= 1'b0;
         end
     end else begin
         sign_A_reg[0] <= sign_A; 
         sign_B_reg[0] <= sign_B;
         sign_C_reg[0] <= sign_C;
+        NaN_a_reg [0] <= NaN_a;
+        NaN_b_reg [0] <= NaN_b;
+        NaN_c_reg [0] <= NaN_c;
         for(i=1 ; i< (EXP_OP_LATENCY + ROUNDER_LATENCY ) ; i=i+1)begin
             sign_A_reg[i] <= sign_A_reg[i-1];
             sign_B_reg[i] <= sign_B_reg[i-1];
             sign_C_reg[i] <= sign_C_reg[i-1];
+            NaN_a_reg [i] <= NaN_a_reg [i-1];
+            NaN_b_reg [i] <= NaN_b_reg [i-1];
+            NaN_c_reg [i] <= NaN_c_reg [i-1];
         end
     end
 end
@@ -428,9 +452,9 @@ fmul_rounder rounder_C ( .frac_i( frac_C_i ) , .exp_i( exp_C_out ) , .frac_o( fr
 //                                       floating point adder 2                                              //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-assign FP_num_A = {sign_A_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1] , exp_A_rounded , frac_A_rounded };  // num_A = a_im * (b_re + b_im)
-assign FP_num_B = {sign_B_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1] , exp_B_rounded , frac_B_rounded };  // num_B = b_im * (a_re - a_im)
-assign FP_num_c = {sign_C_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1] , exp_C_rounded , frac_C_rounded };  // num_C = a_re * (b_re - b_im)
+assign FP_num_A = (NaN_a_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1])? NaN_num : {sign_A_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1] , exp_A_rounded , frac_A_rounded };  // num_A = a_im * (b_re + b_im)
+assign FP_num_B = (NaN_b_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1])? NaN_num : {sign_B_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1] , exp_B_rounded , frac_B_rounded };  // num_B = b_im * (a_re - a_im)
+assign FP_num_c = (NaN_c_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1])? NaN_num : {sign_C_reg[EXP_OP_LATENCY + ROUNDER_LATENCY -1] , exp_C_rounded , frac_C_rounded };  // num_C = a_re * (b_re - b_im)
 
 
 
