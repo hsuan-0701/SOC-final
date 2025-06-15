@@ -1,3 +1,7 @@
+###################################################################
+#    We  add more condition into the fp_add pattern generator      #
+#               Include :  NaN 、 Inf  case                        #
+####################################################################
 import struct
 import random
 
