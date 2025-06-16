@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module fp_add_tb
+module fmul_exp_tb
 #();
 
     wire                   out_inf;

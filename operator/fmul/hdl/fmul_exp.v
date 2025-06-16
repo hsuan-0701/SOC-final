@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    `include "CLA_8.v"
+//    `include "add_11_overflow.v"
+//    `include "add_13_overflow.v"
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // MIT License
@@ -14,16 +21,11 @@
 // . * Add Latency to alignment the timing of mul operation.
 // ============================================================================================================================================================================
 // Revision History:
-// Date         by      Version     Change Description
-//  
+// Date           by          Version         Change Description
+// 2025.6.16   hsuanjung,lo     2.0        solve subnormal case problem
 // 
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  `include "CLA_8.v"
-//  `include "add_11.v"
-//  `include "add_13.v"
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //==================================================================================================================================================================================
 //      
 // * As IEEE 754 format , if the one of operand's exponent is exceed 111_1111_1111 , we regard it as infinite number,and return out_inf=1 ,to tell rounder the infinite number occur. 
@@ -38,7 +40,7 @@
 //      exp_A     >|  xx  |  a0  |  a1  |           xx                                               * input exponent A
 //      exp_B     >|  xx  |  b0  |  b1  |           xx                                               * input exponent B
 //      out_valid >_________________________________________________________/-------------\_______   * output valid asserted high for data output
-//      exp_o     >|                         xx                            |  e0  |  e1  |  xx  |    * output exponent as 13bit signed value.
+//      exp_o     >|                         xx                            |  e0  |  e1  |  xx  |    * output exponent as 13bit signed  value
 //      out_inf   >________________________________________________________________/------\_______   * while the input data contain denormal case(infinite case), asserted high.
 //===================================================================================================================================================================================
 
@@ -80,22 +82,28 @@ module fmul_exp #(
     localparam LATENCY      = 7;    //* Adujust the Latency to align the mul operation timing
 
 //---------------------------------------------------------------------------------------------------------------------------//
-    localparam  INF_EXP     = 11'b111_1111_1111 ;    // * Denormal of infinite     while exponent = 111_1111_1111
-    localparam EXP_BIAS     = 12'd1023;              // * Bias of exponent by IEEE double precision floating point format.
+    localparam  INF_EXP     = 11'b111_1111_1111 ;      // * Denormal of infinite     while exponent = 111_1111_1111
+    localparam EXP_BIAS     = 12'd1023;                // * Bias of exponent by IEEE double precision floating point format.
     localparam EXP_BIAS_sub = 13'b1_1100_0000_0001;    // * Use for substraction Bias.
 //===========================================================================================================================//
 
 //----------------------- pipeline stage 1 ----------------------------------------------------------------------------------//
     reg                                     pip1_v;
+//    reg                                     pip1_zero_case;
     reg [(pEXP_WIDTH-1):0]                  pip1_exp_a;
     reg [(pEXP_WIDTH-1):0]                  pip1_exp_b;
 //----------------------- pipeline stage 2 -----------------------------------------------------------------------------------//
     reg                                     pip2_v;
     reg                                     pip2_inf;
+//    reg                                     pip2_zero_case;
     reg [(pEXP_WIDTH):0]                    pip2_exp;
+    reg [1:0]                               pip2_sub_norm ;
 //-------------------- EXP add & subnormal detect ------------------------------------------------------------------------------//
+    wire                                    zero_a;
+    wire                                    zero_b;
     wire                                    inf_a;
     wire                                    inf_b;
+    wire[1:0]                               subnorm_add;
     wire[(pEXP_WIDTH):0]                    exp_add;
     wire[(pEXP_WIDTH):0]                    exp_result;
 //----------------------- EXP normalize ---------------------------------------------------------------------------------------//
@@ -104,6 +112,11 @@ module fmul_exp #(
     wire[(pEXP_WIDTH+1):0]                  exp_real_value;
 
 //--------------------- pipline stage 3-LATENCY ------------------------------------------------------------------------------//
+    reg                                     pip3_v ;
+    reg [1:0]                               pip3_sub_norm;  
+    reg                                     pip3_inf;
+    reg [(pEXP_WIDTH+1):0]                  pip3_exp;
+//---------------------------------------------------------------------------------------------------------------------------// 
     reg                                     pip_v  [0:LATENCY];
     reg                                     pip_inf[0:LATENCY];
     reg [(pEXP_WIDTH+1):0]                  pip_exp[0:LATENCY];
@@ -116,10 +129,12 @@ module fmul_exp #(
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n)begin
         pip1_v         <= 1'b0;
+//        pip1_zero_case <= 1'b0;
         pip1_exp_a     <= {(pEXP_WIDTH){1'b0}};
         pip1_exp_b     <= {(pEXP_WIDTH){1'b0}};
     end else begin
         pip1_v         <= in_valid;
+//        pip1_zero_case <= zero_case;
         pip1_exp_a     <= exp_A;
         pip1_exp_b     <= exp_B;
     end
@@ -129,10 +144,14 @@ end
 //                               EXP add &　 subnormal detect                                      //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-assign inf_a      = &(pip1_exp_a);
-assign inf_b      = &(pip1_exp_b);
 
-add_11 add_11_0( .in_A( pip1_exp_a ) , .in_B( pip1_exp_b ) , .result( exp_add ));
+assign inf_a       = &(pip1_exp_a);
+assign inf_b       = &(pip1_exp_b);
+assign zero_a      = ~(|pip1_exp_a) ;
+assign zero_b      = ~(|pip1_exp_b) ;
+assign subnorm_add = zero_a + zero_b;
+
+add_11_overflow add_11_0( .in_A( pip1_exp_a ) , .in_B( pip1_exp_b ) , .result( exp_add ));
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,12 +162,16 @@ add_11 add_11_0( .in_A( pip1_exp_a ) , .in_B( pip1_exp_b ) , .result( exp_add ))
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n)begin
         pip2_v          <= 1'b0;
+//        pip2_zero_case  <= 1'b0;
         pip2_inf        <= 1'b0;
         pip2_exp        <= {(pEXP_WIDTH+1){1'b0}};
+        pip2_sub_norm   <= 2'd0 ;
     end else begin
         pip2_v          <= pip1_v;
         pip2_inf        <= (inf_a | inf_b);
+//        pip2_zero_case  <= pip1_zero_case;
         pip2_exp        <= exp_add[(pEXP_WIDTH):0];
+        pip2_sub_norm   <= subnorm_add ;
     end
 end
 
@@ -157,7 +180,6 @@ end
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------------------------------------
-//
 // * can't directly add the exp result , weknow that real value of exponent is exp - bias
 // * so we need to sub the bias hehre.
 //
@@ -172,7 +194,7 @@ end
 //                    don't care    sign    signed value
 //       exp_real > |    1bit     | 1bit |     12bit     |
 //
-// * step3. elininate 1 bit of vaalue(we know that maximum value is 12bit)
+// * step3. elininate 1 bit of value(we know that maximum value is 12bit)
 //                           sign    value
 //     exp_real_value  >   | 1bit |  12bit   |
 //
@@ -182,26 +204,43 @@ assign exp_expand      = {1'b0 , pip2_exp}; // *sign extension of exp(positive)
 assign exp_real_value  =  exp_real[(pEXP_WIDTH+1): 0];
 
 
-add_13 add_13_0( .in_A( exp_expand ) , .in_B( EXP_BIAS_sub ) , .result( exp_real ));
+add_13_overflow add_13_0( .in_A( exp_expand ) , .in_B( EXP_BIAS_sub ) , .result( exp_real ));
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//                                   pipline stage 3-LATENCY                                      //
+//                                   pipline stage 3-> LATENCY                                    //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 integer i;
+
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n)begin
-        for(i=3 ; i<=LATENCY ; i=i+1)begin
+        pip3_v          <= 1'b0 ;
+        pip3_inf        <= 1'b0 ;
+        pip3_exp        <= {(pEXP_WIDTH+2){1'b0}};
+        pip3_sub_norm   <= 2'd0;
+    end else begin 
+        pip3_v          <= pip2_v ;
+        pip3_inf        <= pip2_inf ;
+        pip3_exp        <= exp_real_value ;
+        pip3_sub_norm   <= pip2_sub_norm ;
+    end
+end
+
+
+always @(posedge clk or negedge rst_n) begin
+    if(!rst_n)begin
+        for(i=4 ; i<=LATENCY ; i=i+1)begin
             pip_v[i]   <= 1'b0;
             pip_inf[i] <= 1'b0;
             pip_exp[i] <= {(pEXP_WIDTH+1){1'b0}};
         end
     end else begin
-        pip_v  [3] <= pip2_v;
-        pip_inf[3] <= pip2_inf;
-        pip_exp[3] <= exp_real_value;
-        for(i=4 ; i<=LATENCY ; i=i+1)begin
+        pip_v  [4] <= pip3_v;
+        pip_inf[4] <= pip3_inf;
+        pip_exp[4] <= (pip3_exp + { {(pEXP_WIDTH){1'b0}} , pip3_sub_norm });
+        for(i=5 ; i<=LATENCY ; i=i+1)begin
             pip_v[i]   <= pip_v[i-1];
             pip_inf[i] <= pip_inf[i-1];
             pip_exp[i] <= pip_exp[i-1];
