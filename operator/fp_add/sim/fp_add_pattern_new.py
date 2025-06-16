@@ -1,7 +1,3 @@
-###################################################################
-#    We  add more condition into the fp_add pattern generator      #
-#               Include :  NaN 、 Inf  case                        #
-####################################################################
 import struct
 import random
 
@@ -96,7 +92,6 @@ def align_exponents(m1, e1, m2, e2,position_move):
 ####################################################################
 #                        add operation (fp)                         #
 ####################################################################
-
 def fp64_add(ma, mb, ea, eb, sa, sb):
     ma_funct = ma
     mb_funct = mb
@@ -130,6 +125,11 @@ def fp64_add(ma, mb, ea, eb, sa, sb):
     ##########################################
     ma_funct <<= 52
     mb_funct <<= 52
+    # while subnormal case , bias must be  1022 , so we shift 1 bits of mantissa to modify
+    if ea_funct == 0 :
+        ma_funct <<= 1
+    if eb_funct == 0 :
+        mb_funct <<= 1
     ma_funct, mb_funct, e_funct = align_exponents(ma_funct, ea_funct, mb_funct, eb_funct , position_move=52)
     if sa_funct == sb_funct:
         result_m = ma_funct + mb_funct
@@ -152,8 +152,69 @@ def fp64_add(ma, mb, ea, eb, sa, sb):
         return 0 , 0 , 0
     elif result_e_final == 0 and result_m_final == 0 :
         return 0 , 0 , 0
+    # modify subnormal case while exp == 0 , bias must become 1022 , so we shift mantissa 1 bit
+    elif result_e_final == 0 and result_m_final != 0 :
+        return result_s , result_e_final , (result_m_final >> 1)
     else :
         return result_s, result_e_final, result_m_final
+    
+# def fp64_add(ma, mb, ea, eb, sa, sb):
+#     ma_funct = ma
+#     mb_funct = mb
+    
+#     ea_funct = ea
+#     eb_funct = eb
+    
+#     sa_funct = sa
+#     sb_funct = sb
+#     ###########################################
+#     #               Denormal                  #
+#     ###########################################
+#     # NaN case
+#     if ea_funct == 2047 and ( (ma_funct & ((1<<52) -1)) != 0 ):
+#         return 0 , 2047 , 1
+#     if eb_funct == 2047 and ( (mb_funct & ((1<<52) -1)) != 0 ):
+#         return 0 , 2047 , 1
+#     # double inf case
+#     if ea_funct == 2047 and eb_funct == 2047:
+#         if(sa_funct != sb_funct):
+#             return 0 , 2047 , 1
+#         else :
+#             return sa_funct , 2047 , 0
+#     # single inf case
+#     if ea_funct == 2047 :
+#         return sa_funct , 2047 , 0
+#     if eb_funct == 2047 :
+#         return sb_funct , 2047 , 0
+#     ##########################################
+#     #               Normal                   #
+#     ##########################################
+#     ma_funct <<= 52
+#     mb_funct <<= 52
+#     ma_funct, mb_funct, e_funct = align_exponents(ma_funct, ea_funct, mb_funct, eb_funct , position_move=52)
+#     if sa_funct == sb_funct:
+#         result_m = ma_funct + mb_funct
+#         result_s = sa_funct
+#     else:
+#         if ma_funct >= mb_funct:
+#             result_m = ma_funct - mb_funct
+#             result_s = sa_funct
+#         else:
+#             result_m = mb_funct - ma_funct
+#             result_s = sb_funct
+    
+#     result_m, result_e = normalize(result_m, e_funct , position_move=52)
+#     result_m = round_to_nearest_even_with_sticky(result_m , lsb_position=52)
+#     result_m_final , result_e_final = normalize(result_m , result_e , position_move=0)
+#     # Zero case or inf case  
+#     if result_e_final  >= 2047 :
+#         return result_s , 2047 , 0
+#     elif result_e_final < 0  :
+#         return 0 , 0 , 0
+#     elif result_e_final == 0 and result_m_final == 0 :
+#         return 0 , 0 , 0
+#     else :
+#         return result_s, result_e_final, result_m_final
     
 
 
@@ -174,7 +235,7 @@ def ieee754_double_to_hex(sign, exponent, mantissa):
     return f"{bits:016X}"
 
 
-pattern_num = 50000
+pattern_num = 500000
 
 with open("a.dat", "w") as fa, open("b.dat", "w") as fb, open("golden.dat", "w") as fg, \
      open("a_float.dat", "w") as fa_fp, open("b_float.dat", "w") as fb_fp, open("golden_float.dat", "w") as fg_fp:
