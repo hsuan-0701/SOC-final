@@ -1,8 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    `include "CLA_8.v"
-//    `include "add_13_overflow.v"
-//    `include "add_53_overflow.v"
-//    `include "LOD_64.v"
+    // `include "CLA_8.v"
+    // `include "add_13_overflow.v"
+    // `include "add_53_overflow.v"
+    // `include "LOD_64.v"
+    // `include "LOD_128.v"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -25,7 +26,7 @@
 // Date         by              Version              Change Description
 // 2025.6.5   hsuan_jung,lo       2.0       fix rounding position of lsb and fix pattern problem
 // 2025.6.16  hsuan_jung,lo       3.0       modify the data process , we include subnormal case 
-//
+// 2025.6.18  hsuan_jung,lo       4.0       modfiy the rounding process to improve the precision
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //==================================================================================================================================================================================
@@ -143,6 +144,7 @@ module fmul_rounder#(
     input                       rst_n
 );
     localparam pLOD_WIDTH  = 64;
+    localparam pLOD_WIDTH2 = 128;
     localparam pFRAC_WIDTH = 53;
     localparam EXP_BIAS    = 13'd1023;
     localparam EXP_MAX     = 12'b0111_1111_1110;
@@ -157,14 +159,15 @@ module fmul_rounder#(
     wire                                    sticky_bit ;
     wire                                    guard_bit  ;
     wire                                    ound_bit  ;
-    wire [(pFRAC_WIDTH-1):0]                frac;
+    wire [(pDIN_WIDTH-1) :0]                frac;
     wire [(pFRAC_WIDTH-1):0]                frac_logic_one;
     wire [(pFRAC_WIDTH  ):0]                frac_add;
     wire [(pFRAC_WIDTH  ):0]                frac_rounded;
-
+    wire [(pLOD_WIDTH2-1):0]                frac_i_expand;
     wire [(pEXP_WIDTH+2):0]                 exp_add;
     wire [(pEXP_WIDTH+1):0]                 exp_logic_one;
-    wire [(pEXP_WIDTH+1):0]                 exp_normalized_0;
+    wire signed[(pEXP_WIDTH+1):0]           exp_normalized_0;
+    wire signed[(pEXP_WIDTH+1) :0]          shift_fi ; 
     wire                                    zero_case;
 //------------------------------------------ pipeline stage 0 ------------------------------------------------------------//
     reg                                     stage_0_v;
@@ -210,31 +213,48 @@ module fmul_rounder#(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                         First Normalize and rounding                                                   //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    assign frac_i_expand                       = {frac_i , {(pLOD_WIDTH2 - pDIN_WIDTH){1'b0}}};
+    assign shift_fi[(pEXP_WIDTH+1):pEXP_WIDTH] = 2'b00;
+    assign zero_case                           = ~ (|frac_i);
 
-    assign zero_case        = ~ (|frac_i);
 //------------------------------------------ first normalize  & rounding --------------------------------------------------//
-    assign frac             = (frac_i[pDIN_WIDTH-1]) ? frac_i[(pDIN_WIDTH-1):(pDIN_WIDTH - pFRAC_WIDTH)] : frac_i[(pDIN_WIDTH-2) : (pDIN_WIDTH - pFRAC_WIDTH - 1) ]; 
-    assign sticky_bit       = (frac_i[pDIN_WIDTH-1]) ? |(frac_i[(pDIN_WIDTH - pFRAC_WIDTH -3) : 1])      : |(frac_i[(pDIN_WIDTH- pFRAC_WIDTH -4) :0]);
-    assign lsb              = (frac_i[pDIN_WIDTH-1]) ? frac_i[pDIN_WIDTH - pFRAC_WIDTH]                  : frac_i[pDIN_WIDTH - pFRAC_WIDTH -1];
-    assign guard_bit        = (frac_i[pDIN_WIDTH-1]) ? frac_i[pDIN_WIDTH - pFRAC_WIDTH-1]                : frac_i[pDIN_WIDTH - pFRAC_WIDTH -2];
-    assign round_bit        = (frac_i[pDIN_WIDTH-1]) ? frac_i[pDIN_WIDTH - pFRAC_WIDTH-2]                : frac_i[pDIN_WIDTH - pFRAC_WIDTH -3];
 
-
-    assign exp_normalized_0 = (frac_i[pDIN_WIDTH-1]  ) ? exp_add[(pEXP_WIDTH+1):0] : exp_i ;
-    assign frac_rounded     = (guard_bit && (lsb | round_bit | sticky_bit))?   frac_add[(pFRAC_WIDTH):0] : {1'b0 , frac};
-    assign frac_logic_one   = {{(pFRAC_WIDTH-1){1'b0}}  , 1'b1};
-
-    add_53_overflow adder_0(
-        .in_A(frac),
-        .in_B(frac_logic_one),
-        .result(frac_add)
+    LOD_128 LOD_01(
+        .A(frac_i_expand) ,
+        .position(shift_fi[(pEXP_WIDTH-1):0])
     );
+    
+    assign frac             = frac_i << shift_fi ;    
+    assign sticky_bit       = |(frac[(pDIN_WIDTH - pFRAC_WIDTH -3) : 0]);
+    assign lsb              = frac[pDIN_WIDTH - pFRAC_WIDTH];
+    assign guard_bit        = frac[pDIN_WIDTH - pFRAC_WIDTH-1];
+    assign round_bit        = frac[pDIN_WIDTH - pFRAC_WIDTH-2];
+    assign exp_normalized_0 = exp_i - shift_fi + frac_logic_one[(pEXP_WIDTH+1):0];
+    assign frac_add         = frac[(pDIN_WIDTH-1):(pDIN_WIDTH - pFRAC_WIDTH)] + {{(pFRAC_WIDTH){1'b0}} , 1'b1 };
+    
+    
+    // assign frac             = (frac_i[pDIN_WIDTH-1]) ? frac_i[(pDIN_WIDTH-1):(pDIN_WIDTH - pFRAC_WIDTH)] : frac_i[(pDIN_WIDTH-2) : (pDIN_WIDTH - pFRAC_WIDTH - 1) ]; 
+    // assign sticky_bit       = (frac_i[pDIN_WIDTH-1]) ? |(frac_i[(pDIN_WIDTH - pFRAC_WIDTH -3) : 1])      : |(frac_i[(pDIN_WIDTH- pFRAC_WIDTH -4) :0]);
+    // assign lsb              = (frac_i[pDIN_WIDTH-1]) ? frac_i[pDIN_WIDTH - pFRAC_WIDTH]                  : frac_i[pDIN_WIDTH - pFRAC_WIDTH -1];
+    // assign guard_bit        = (frac_i[pDIN_WIDTH-1]) ? frac_i[pDIN_WIDTH - pFRAC_WIDTH-1]                : frac_i[pDIN_WIDTH - pFRAC_WIDTH -2];
+    // assign round_bit        = (frac_i[pDIN_WIDTH-1]) ? frac_i[pDIN_WIDTH - pFRAC_WIDTH-2]                : frac_i[pDIN_WIDTH - pFRAC_WIDTH -3];
 
-    add_13_overflow adder_1(
-        .in_A( exp_i ),
-        .in_B( frac_logic_one[(pEXP_WIDTH+1):0] ),
-        .result( exp_add )
-    );
+
+    // assign exp_normalized_0 = (frac_i[pDIN_WIDTH-1]  ) ? exp_add[(pEXP_WIDTH+1):0] : exp_i ;
+     assign frac_rounded     = (guard_bit && (lsb | round_bit | sticky_bit))?   frac_add : {1'b0 , frac[(pDIN_WIDTH-1):(pDIN_WIDTH - pFRAC_WIDTH)]};
+     assign frac_logic_one   = {{(pFRAC_WIDTH-1){1'b0}}  , 1'b1};
+
+    // add_53_overflow adder_0(
+    //     .in_A(frac),
+    //     .in_B(frac_logic_one),
+    //     .result(frac_add)
+    // );
+
+    // add_13_overflow adder_1(
+    //     .in_A( exp_i ),
+    //     .in_B( frac_logic_one[(pEXP_WIDTH+1):0] ),
+    //     .result( exp_add )
+    // );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            pipeline stage 0                                                            //
@@ -262,7 +282,7 @@ end
 assign frac_expand = (frac_stage_0[pFRAC_WIDTH])? {frac_stage_0 , {(pLOD_WIDTH-pFRAC_WIDTH-1){1'b0}} } : {frac_stage_0[(pFRAC_WIDTH-1):0] , {(pLOD_WIDTH-pFRAC_WIDTH){1'b0}}};
 assign exp_0       = (frac_stage_0[pFRAC_WIDTH])?      (exp_stage_0 + {{(pEXP_WIDTH+1){1'b0}} , 1'b1}) : exp_stage_0 ;
 
-    LOD_64 LOD_00(
+    LOD_64 LOD_02(
         .A(frac_expand) ,
         .position(shift)
     );
