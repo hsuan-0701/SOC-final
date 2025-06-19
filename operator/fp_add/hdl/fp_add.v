@@ -1,7 +1,7 @@
-//    `include "CLA_8.v"
-//    `include "add_107.v"
-//    `include "sub_107.v"
-//    `include "LOD_128.v"
+    // `include "CLA_8.v"
+    // `include "add_107.v"
+    // `include "sub_107.v"
+    // `include "LOD_128.v"
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -25,6 +25,7 @@
 // 2025.6.1     hsuanjung,lo      4.0         change the included module name "LOD" => "LOD_128"
 // 2025.6.13    hsuanjung,lo      5.0         solve inf input case and NaN case
 // 2025.6.15    hsuanjung,lo      6.0         solve subnormal bias mistake
+// 2025.6.19    hsuanjung,lo      7.0         solve the error of fraction in pip4、pip5(modify flip flop width)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //==================================================================================================================================================================================
@@ -165,13 +166,13 @@ reg                                 pip4_guard;
 reg                                 pip4_round;
 reg                                 pip4_result_sign;
 reg [(pEXP_WIDTH-1)  :0]            pip4_exp ;
-reg [(pFRAC_WIDTH-1):0]             pip4_frac;
+reg [(pFRAC_WIDTH):0]               pip4_frac;
 reg                                 pip4_v;
 reg                                 pip4_inf;
 reg                                 pip4_NaN;
 //====================== rounding and second normalization ===================//
-wire[(pFRAC_WIDTH) :0]              frac_normal_0_expand;
-wire[(pFRAC_WIDTH) :0]              frac_rounded;
+wire[(pFRAC_WIDTH+1) :0]            frac_normal_0_expand;
+wire[(pFRAC_WIDTH+1) :0]            frac_rounded;
 reg                                 round_op;
 
 wire[(pFRAC_WIDTH) :0]              frac_normal_1;
@@ -179,7 +180,7 @@ wire[(pEXP_WIDTH-1):0]              exp_normal_1;
 //============================ pipeline stage5 ===============================//
 reg                                 pip5_result_sign;
 reg [(pEXP_WIDTH-1):0]              pip5_exp;
-reg [(pFRAC_WIDTH-1):0]             pip5_frac;
+reg [(pFRAC_WIDTH):0]               pip5_frac;
 reg                                 pip5_v;
 wire                                pip5_result_sign_nxt;
 wire                                nonzero_case ;
@@ -398,7 +399,7 @@ end
 // * frac_result is  result of fraction operation 
 //
 // * frac_result Structure:
-//        1bit     1bit        53bits           49bits
+//        1bit     1bit        53bits           52bits
 //      | sign | overflow | fraction add  | shifted fraction  |
 //
 // * First we transfer signed value into absolute value (frac_abs)
@@ -476,7 +477,7 @@ always @(posedge clk or negedge rst_n) begin
         pip4_round       <= 1'b0;
     
         pip4_exp         <= {(pEXP_WIDTH){1'b0}};
-        pip4_frac        <= {(pFRAC_WIDTH){1'b0}};
+        pip4_frac        <= {(pFRAC_WIDTH+1){1'b0}};
         pip4_result_sign <= 1'b0;
         pip4_v           <= 1'b0;
     end else begin
@@ -488,7 +489,7 @@ always @(posedge clk or negedge rst_n) begin
         pip4_round       <= round_bit;
 
         pip4_exp         <= exp_normal_0;
-        pip4_frac        <= frac_normal_0[(pADDER_WIDTH-4):(pADDER_WIDTH-pFRAC_WIDTH-3)];
+        pip4_frac        <= frac_normal_0[(pADDER_WIDTH-3):(pADDER_WIDTH-pFRAC_WIDTH-3)];
         pip4_result_sign <= result_sign;
         pip4_v           <= pip3_v;
     end
@@ -520,11 +521,11 @@ localparam  ROUNDING        = 1'b0;
 localparam  NO_ROUNDING     = 1'b1;
 
 assign frac_normal_0_expand = {1'b0 , pip4_frac};
-assign frac_rounded         = (round_op == ROUNDING)?  (frac_normal_0_expand + {{(pFRAC_WIDTH){1'b0}} , 1'b1}) : frac_normal_0_expand ;
+assign frac_rounded         = (round_op == ROUNDING)?  (frac_normal_0_expand + {{(pFRAC_WIDTH+1){1'b0}} , 1'b1}) : frac_normal_0_expand ;
 
 
-assign frac_normal_1        = (pip4_NaN)? {{(pFRAC_WIDTH){1'b0}} , 1'b1} : ((pip4_inf)?  {(pFRAC_WIDTH+1){1'b0}} : ( (frac_rounded[pFRAC_WIDTH])?  ( frac_rounded >> 1) : frac_rounded ) );
-assign exp_normal_1         = (pip4_NaN)? {(pEXP_WIDTH){1'b1}}           : ((pip4_inf)?  {(pEXP_WIDTH){1'b1}}    : ( (frac_rounded[pFRAC_WIDTH])?  (pip4_exp + {{(pEXP_WIDTH-1){1'b0}} , 1'b1})  : pip4_exp));
+assign frac_normal_1        = (pip4_NaN)? {{(pFRAC_WIDTH){1'b0}} , 1'b1} : ((pip4_inf)?  {(pFRAC_WIDTH+1){1'b0}} : ( (frac_rounded[pFRAC_WIDTH+1])?   frac_rounded[(pFRAC_WIDTH+1):1] : frac_rounded[(pFRAC_WIDTH):0] ) );
+assign exp_normal_1         = (pip4_NaN)? {(pEXP_WIDTH){1'b1}}           : ((pip4_inf)?  {(pEXP_WIDTH){1'b1}}    : ( (frac_rounded[pFRAC_WIDTH+1])?  (pip4_exp + {{(pEXP_WIDTH-1){1'b0}} , 1'b1})  : pip4_exp));
 assign pip5_result_sign_nxt = (pip4_NaN)? 1'b0                           : pip4_result_sign;
 
 always @(*) begin
@@ -545,18 +546,18 @@ always @(posedge clk or negedge rst_n) begin
     if(!rst_n)begin
         pip5_result_sign <= 1'b0;
         pip5_exp         <= {(pEXP_WIDTH){1'b0}};
-        pip5_frac        <= {(pFRAC_WIDTH){1'b0}};
+        pip5_frac        <= {(pFRAC_WIDTH+1){1'b0}};
         pip5_v           <= 1'b0;
     end else begin
         pip5_result_sign <= pip5_result_sign_nxt ;
         pip5_exp         <= exp_normal_1;
-        pip5_frac        <= frac_normal_1[(pFRAC_WIDTH-1): 0];
+        pip5_frac        <= frac_normal_1[(pFRAC_WIDTH): 0];
         pip5_v           <= pip4_v;
     end
 end
 
 assign nonzero_case  = (| pip5_exp) | (| pip5_frac) ;
-assign result        = (| pip5_exp)? {( pip5_result_sign & nonzero_case ) , pip5_exp , pip5_frac} : {( pip5_result_sign & nonzero_case ) , pip5_exp , (pip5_frac>>1)};
+assign result        = (| pip5_exp)? {( pip5_result_sign & nonzero_case ) , pip5_exp , pip5_frac[(pFRAC_WIDTH-1):0]} : {( pip5_result_sign & nonzero_case ) , pip5_exp , pip5_frac[(pFRAC_WIDTH): 1] };
 assign out_valid     = pip5_v;
 
 
