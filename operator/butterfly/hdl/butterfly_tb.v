@@ -1,7 +1,31 @@
 `timescale 1ns/1ps
-
 `define FSDB
 `define CLK_PERIOD 10
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+// MIT License
+// ---
+// Copyright © 2023 Company
+// .... Content of the license
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ============================================================================================================================================================================
+// Module Name : butterfly_tb
+// Author : Jeese , hsuanjung,Lo
+// Create Date: 6/2025
+// Features & Functions:
+// . Testbench for BPE 
+// . 
+// ============================================================================================================================================================================
+// Revision History:
+// Date            by              Version       Change Description
+// 2025.6.24    hsuanjung,lo         2.0          output check bug(don't check while ready & valid handshake)
+//
+// 
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
 module butterfly_tb
 #();
@@ -190,7 +214,7 @@ butterfly BUTTERFLY_DUT(
             third_switch = third_switch -1;
         end 
         for(i=3000 ; i<6000 ;i=i+1)begin
-            fft_input(FFT_Ai_list[i] , FFT_Bi_list[i] ,  FFT_Gi_list[i] , 100 );
+            fft_input(FFT_Ai_list[i] , FFT_Bi_list[i] ,  FFT_Gi_list[i] , 0 );
         end
        while(forth_switch >0)begin
             @(posedge clk);
@@ -245,10 +269,10 @@ butterfly BUTTERFLY_DUT(
         $display("//               Second level test start                       //");
         $display("/////////////////////////////////////////////////////////////////");
         for(j=3000 ; j<6000 ;j=j+1)begin
-            ntt_output_check(NTT_A_golden_list[j] , NTT_B_golden_list[j] , 100 ,j );
+            ntt_output_check(NTT_A_golden_list[j] , NTT_B_golden_list[j] , 0 ,j );
         end
         for(j=3000 ; j<6000 ;j=j+1)begin
-            fft_output_check(FFT_A_golden_list[j] , FFT_B_golden_list[j] , 0 ,j );
+            fft_output_check(FFT_A_golden_list[j] , FFT_B_golden_list[j] , 100 ,j );
         end
         $display("/////////////////////////////////////////////////////////////////");
         $display("//                Third level test start                       //");
@@ -257,7 +281,7 @@ butterfly BUTTERFLY_DUT(
             ntt_output_check(NTT_A_golden_list[j] , NTT_B_golden_list[j] , 100 ,j );
         end
         for(j=6000 ; j<10000 ;j=j+1)begin
-            fft_output_check(FFT_A_golden_list[j] , FFT_B_golden_list[j] , 0 ,j );
+            fft_output_check(FFT_A_golden_list[j] , FFT_B_golden_list[j] , 100 ,j );
         end
         for(j=9000 ; j<10000 ;j=j+1)begin
             ntt_output_check(NTT_A_golden_list[j] , NTT_B_golden_list[j] , 10 ,j );
@@ -336,6 +360,7 @@ butterfly BUTTERFLY_DUT(
                 $display("[PASS]  [FFT_Pattern %d] Golden A :  %h    , Your A :   %h" , fft_ocnt, fft_answer_a , A_out );
                 $display("[PASS]  [FFT_Pattern %d] Golden B :  %h    , Your B :   %h" , fft_ocnt, fft_answer_b , B_out );
             end
+            out_ready <= 0;
         end
     endtask
 
@@ -396,8 +421,10 @@ butterfly BUTTERFLY_DUT(
                 ntt_error <= ntt_error + 1 ;
             end else begin
                 $display("[PASS]  [NTT_Pattern %d] Golden A :  %h  , Your A : %h " , ntt_ocnt, ntt_answer_a  , A_out  );
+               
                 $display("[PASS]  [NTT_Pattern %d] Golden B :  %h  , Your B : %h " , ntt_ocnt, ntt_answer_b  , B_out );
             end
+            out_ready <= 0;
         end
     endtask
 
