@@ -1,0 +1,43 @@
+ 
+****************************************
+Report : area
+Design : fp_add
+Version: U-2022.12
+Date   : Mon Jun 30 18:51:35 2025
+****************************************
+
+Library(s) Used:
+
+    slow (File: /home/raid7_2/user13/r3921070/fp_add_v0/syn/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db)
+
+Number of ports:                          196
+Number of nets:                          4757
+Number of cells:                         4418
+Number of combinational cells:           3949
+Number of sequential cells:               469
+Number of macros/black boxes:               0
+Number of buf/inv:                        572
+Number of references:                      94
+
+Combinational area:              54133.834261
+Buf/Inv area:                     3968.395252
+Noncombinational area:           31830.321152
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                 85964.155413
+Total area:                 undefined
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area            Local cell area
+                                  -------------------  ------------------------------ 
+Hierarchical cell                 Absolute    Percent  Combi-      Noncombi-   Black-
+                                  Total       Total    national    national    boxes   Design
+--------------------------------  ----------  -------  ----------  ----------  ------  ---------
+fp_add                            85964.1554    100.0  54133.8343  31830.3212  0.0000  fp_add
+--------------------------------  ----------  -------  ----------  ----------  ------  ---------
+Total                                                  54133.8343  31830.3212  0.0000
+
+1

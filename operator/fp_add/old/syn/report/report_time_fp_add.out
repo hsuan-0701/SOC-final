@@ -1,0 +1,912 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : fp_add
+Version: U-2022.12
+Date   : Mon Jun 30 21:41:42 2025
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pip3_frac_result_reg[65]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip4_sticky_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip3_frac_result_reg[65]/CK (DFFSX1)                    0.00       0.50 r
+  pip3_frac_result_reg[65]/QN (DFFSX1)                    0.50       1.00 f
+  U12738/Y (NOR2X1)                                       0.17       1.17 r
+  U12889/Y (NAND2XL)                                      0.19       1.36 f
+  U12903/Y (NOR2X2)                                       0.19       1.55 r
+  U12946/Y (NAND2XL)                                      0.17       1.71 f
+  U12947/Y (NOR2XL)                                       0.16       1.87 r
+  U7080/Y (BUFX2)                                         0.23       2.10 r
+  U13001/Y (NAND2XL)                                      0.08       2.18 f
+  U13002/Y (NOR2XL)                                       0.17       2.36 r
+  U13003/Y (XOR2X1)                                       0.24       2.60 f
+  U6653/Y (MXI2X1)                                        0.26       2.86 r
+  U13007/Y (NAND2XL)                                      0.12       2.97 f
+  U9852/Y (NOR3X1)                                        0.29       3.26 r
+  U9851/Y (NAND4X2)                                       0.21       3.48 f
+  U13072/Y (AOI21X2)                                      0.19       3.66 r
+  U6643/Y (INVX1)                                         0.21       3.87 f
+  U13094/Y (NOR2XL)                                       0.15       4.02 r
+  U13095/Y (NOR2XL)                                       0.09       4.11 f
+  U13098/Y (NAND4X1)                                      0.21       4.32 r
+  U13099/Y (NOR2X4)                                       0.13       4.46 f
+  U9848/Y (AOI21X1)                                       0.15       4.61 r
+  U13119/Y (OAI21XL)                                      0.12       4.73 f
+  U6826/Y (NOR2X1)                                        0.16       4.89 r
+  U13126/Y (NAND2X1)                                      0.10       4.98 f
+  U13127/Y (NOR2X2)                                       0.18       5.16 r
+  U13128/Y (INVX1)                                        0.08       5.24 f
+  U13158/Y (NOR2X2)                                       0.19       5.43 r
+  U13159/Y (OAI2BB1X2)                                    0.07       5.51 f
+  U13165/Y (NAND3X2)                                      0.17       5.68 r
+  U8008/Y (OAI21XL)                                       0.14       5.81 f
+  U7975/Y (AOI21X1)                                       0.21       6.02 r
+  U13189/Y (NAND2X2)                                      0.14       6.16 f
+  U13190/Y (NAND2X4)                                      0.12       6.27 r
+  U13192/Y (NOR2X4)                                       0.07       6.35 f
+  U13193/Y (NAND2X4)                                      0.10       6.45 r
+  U7719/Y (BUFX20)                                        0.18       6.63 r
+  U13220/Y (NAND2X2)                                      0.09       6.72 f
+  U13221/Y (OR2X4)                                        0.20       6.92 f
+  U7568/Y (NAND3X1)                                       0.13       7.05 r
+  U13226/Y (NAND3X2)                                      0.09       7.14 f
+  U13227/Y (NAND3X2)                                      0.15       7.29 r
+  U13236/Y (NAND3X4)                                      0.13       7.42 f
+  U7442/Y (MXI2X1)                                        0.22       7.64 f
+  U13241/Y (BUFX8)                                        0.18       7.81 f
+  U6640/Y (CLKINVX3)                                      0.07       7.89 r
+  U6639/Y (NAND2X2)                                       0.06       7.95 f
+  U6634/Y (INVXL)                                         0.12       8.07 r
+  U6630/Y (CLKBUFX8)                                      0.30       8.37 r
+  U13403/Y (AOI22XL)                                      0.10       8.47 f
+  U13404/Y (NAND2XL)                                      0.20       8.67 r
+  U13888/Y (AOI22XL)                                      0.15       8.81 f
+  U13889/Y (NAND2XL)                                      0.18       8.99 r
+  U13954/Y (INVXL)                                        0.08       9.07 f
+  U13955/Y (NOR4BXL)                                      0.32       9.39 r
+  U13957/Y (NAND4XL)                                      0.16       9.54 f
+  U13973/Y (NOR4X1)                                       0.17       9.71 r
+  U7137/Y (NAND4XL)                                       0.14       9.85 f
+  U13980/Y (OAI22X1)                                      0.17      10.03 r
+  U13987/Y (AOI21X1)                                      0.11      10.14 f
+  U13988/Y (MXI2X1)                                       0.13      10.27 r
+  pip4_sticky_reg/D (DFFSX1)                              0.00      10.27 r
+  data arrival time                                                 10.27
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip4_sticky_reg/CK (DFFSX1)                             0.00      10.40 r
+  library setup time                                     -0.12      10.28
+  data required time                                                10.28
+  --------------------------------------------------------------------------
+  data required time                                                10.28
+  data arrival time                                                -10.27
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[100]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)                          0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)                          0.53       1.03 f
+  U9926/Y (NOR2X2)                                        0.17       1.20 r
+  U9928/Y (NAND2XL)                                       0.13       1.33 f
+  U9931/Y (NOR3XL)                                        0.23       1.56 r
+  U9509/Y (NAND4XL)                                       0.17       1.73 f
+  U9426/Y (NOR2X1)                                        0.22       1.94 r
+  U7072/Y (NAND2XL)                                       0.12       2.07 f
+  U9263/Y (NOR2X1)                                        0.19       2.25 r
+  U9889/Y (NAND2X1)                                       0.13       2.39 f
+  U9131/Y (NOR2X1)                                        0.16       2.54 r
+  U9890/Y (NAND2X1)                                       0.15       2.69 f
+  U8942/Y (NOR2X2)                                        0.15       2.84 r
+  U9891/Y (NAND2X1)                                       0.12       2.96 f
+  U8632/Y (NOR2X1)                                        0.15       3.12 r
+  U9944/Y (NAND2X1)                                       0.10       3.22 f
+  U6865/Y (NOR2X1)                                        0.18       3.40 r
+  U8445/Y (NAND2X1)                                       0.13       3.54 f
+  U6858/Y (NOR2X1)                                        0.16       3.69 r
+  U9894/Y (NAND2X1)                                       0.17       3.86 f
+  U9945/Y (NOR2X2)                                        0.12       3.98 r
+  U9880/Y (NAND2X1)                                       0.10       4.08 f
+  U9946/Y (NOR2X1)                                        0.18       4.27 r
+  U9947/Y (NAND2X1)                                       0.14       4.41 f
+  U9948/Y (NOR2X2)                                        0.13       4.54 r
+  U6830/Y (NAND2X1)                                       0.12       4.66 f
+  U9949/Y (NOR2X2)                                        0.16       4.82 r
+  U9950/Y (NAND2X2)                                       0.09       4.91 f
+  U9951/Y (NOR2X2)                                        0.12       5.02 r
+  U9952/Y (NAND2X1)                                       0.17       5.19 f
+  U9953/Y (NOR2X4)                                        0.17       5.36 r
+  U9987/Y (INVX4)                                         0.06       5.42 f
+  U8039/Y (NOR2X2)                                        0.11       5.53 r
+  U10291/Y (NAND2X2)                                      0.08       5.61 f
+  U10292/Y (CLKINVX2)                                     0.09       5.70 r
+  U10293/Y (NAND2X1)                                      0.14       5.84 f
+  U7881/Y (INVX1)                                         0.09       5.94 r
+  U10318/Y (NAND2XL)                                      0.11       6.04 f
+  U10321/Y (CLKINVX2)                                     0.08       6.12 r
+  U10322/Y (NAND2X1)                                      0.14       6.27 f
+  U10325/Y (NOR2X2)                                       0.14       6.41 r
+  U10327/Y (NAND2X1)                                      0.09       6.50 f
+  U10328/Y (OAI21X1)                                      0.11       6.61 r
+  U10329/Y (OR2X2)                                        0.17       6.78 r
+  U10331/Y (NAND2XL)                                      0.11       6.89 f
+  U10336/Y (OR2X2)                                        0.22       7.10 f
+  U10340/Y (OAI21XL)                                      0.19       7.30 r
+  U10341/Y (OAI2BB1X2)                                    0.21       7.50 r
+  U10342/Y (AOI21X1)                                      0.11       7.61 f
+  U7454/Y (NOR2X1)                                        0.17       7.78 r
+  U10343/Y (NOR3X1)                                       0.10       7.88 f
+  U10344/Y (OAI22X2)                                      0.26       8.14 r
+  U9893/Y (AOI21X1)                                       0.19       8.33 f
+  U10365/Y (NOR3X1)                                       0.22       8.55 r
+  U10366/Y (NAND3X1)                                      0.13       8.68 f
+  U7310/Y (NOR3X1)                                        0.23       8.91 r
+  U10367/Y (AOI211X2)                                     0.14       9.05 f
+  U9907/Y (NOR2X1)                                        0.17       9.21 r
+  U6623/Y (NOR2X1)                                        0.11       9.32 f
+  U7213/Y (NOR3X2)                                        0.12       9.44 r
+  U6683/Y (AOI211X1)                                      0.11       9.55 f
+  U6687/Y (NOR2X1)                                        0.15       9.70 r
+  U6693/Y (XNOR2XL)                                       0.30      10.00 r
+  U7155/Y (AOI21XL)                                       0.09      10.09 f
+  pip3_frac_result_reg[100]/D (DFFSX1)                    0.00      10.09 f
+  data arrival time                                                 10.09
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip3_frac_result_reg[100]/CK (DFFSX1)                   0.00      10.40 r
+  library setup time                                     -0.31      10.09
+  data required time                                                10.09
+  --------------------------------------------------------------------------
+  data required time                                                10.09
+  data arrival time                                                -10.09
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.01
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[99]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)           0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)           0.53       1.03 f
+  U9926/Y (NOR2X2)                         0.17       1.20 r
+  U9928/Y (NAND2XL)                        0.13       1.33 f
+  U9931/Y (NOR3XL)                         0.23       1.56 r
+  U9509/Y (NAND4XL)                        0.17       1.73 f
+  U9426/Y (NOR2X1)                         0.22       1.94 r
+  U7072/Y (NAND2XL)                        0.12       2.07 f
+  U9263/Y (NOR2X1)                         0.19       2.25 r
+  U9889/Y (NAND2X1)                        0.13       2.39 f
+  U9131/Y (NOR2X1)                         0.16       2.54 r
+  U9890/Y (NAND2X1)                        0.15       2.69 f
+  U8942/Y (NOR2X2)                         0.15       2.84 r
+  U9891/Y (NAND2X1)                        0.12       2.96 f
+  U8632/Y (NOR2X1)                         0.15       3.12 r
+  U9944/Y (NAND2X1)                        0.10       3.22 f
+  U6865/Y (NOR2X1)                         0.18       3.40 r
+  U8445/Y (NAND2X1)                        0.13       3.54 f
+  U6858/Y (NOR2X1)                         0.16       3.69 r
+  U9894/Y (NAND2X1)                        0.17       3.86 f
+  U9945/Y (NOR2X2)                         0.12       3.98 r
+  U9880/Y (NAND2X1)                        0.10       4.08 f
+  U9946/Y (NOR2X1)                         0.18       4.27 r
+  U9947/Y (NAND2X1)                        0.14       4.41 f
+  U9948/Y (NOR2X2)                         0.13       4.54 r
+  U6830/Y (NAND2X1)                        0.12       4.66 f
+  U9949/Y (NOR2X2)                         0.16       4.82 r
+  U9950/Y (NAND2X2)                        0.09       4.91 f
+  U9951/Y (NOR2X2)                         0.12       5.02 r
+  U9952/Y (NAND2X1)                        0.17       5.19 f
+  U9953/Y (NOR2X4)                         0.17       5.36 r
+  U9987/Y (INVX4)                          0.06       5.42 f
+  U8039/Y (NOR2X2)                         0.11       5.53 r
+  U10291/Y (NAND2X2)                       0.08       5.61 f
+  U10292/Y (CLKINVX2)                      0.09       5.70 r
+  U10293/Y (NAND2X1)                       0.14       5.84 f
+  U7881/Y (INVX1)                          0.09       5.94 r
+  U10318/Y (NAND2XL)                       0.11       6.04 f
+  U10321/Y (CLKINVX2)                      0.08       6.12 r
+  U10322/Y (NAND2X1)                       0.14       6.27 f
+  U10325/Y (NOR2X2)                        0.14       6.41 r
+  U10327/Y (NAND2X1)                       0.09       6.50 f
+  U10328/Y (OAI21X1)                       0.11       6.61 r
+  U10329/Y (OR2X2)                         0.17       6.78 r
+  U10331/Y (NAND2XL)                       0.11       6.89 f
+  U10336/Y (OR2X2)                         0.22       7.10 f
+  U10340/Y (OAI21XL)                       0.19       7.30 r
+  U10341/Y (OAI2BB1X2)                     0.21       7.50 r
+  U10342/Y (AOI21X1)                       0.11       7.61 f
+  U7454/Y (NOR2X1)                         0.17       7.78 r
+  U10343/Y (NOR3X1)                        0.10       7.88 f
+  U10344/Y (OAI22X2)                       0.26       8.14 r
+  U9893/Y (AOI21X1)                        0.19       8.33 f
+  U10365/Y (NOR3X1)                        0.22       8.55 r
+  U10366/Y (NAND3X1)                       0.13       8.68 f
+  U7310/Y (NOR3X1)                         0.23       8.91 r
+  U10367/Y (AOI211X2)                      0.14       9.05 f
+  U9907/Y (NOR2X1)                         0.17       9.21 r
+  U6623/Y (NOR2X1)                         0.11       9.32 f
+  U6689/Y (OR2XL)                          0.28       9.59 f
+  U7199/Y (NAND3X1)                        0.12       9.72 r
+  U7185/Y (AOI31XL)                        0.13       9.85 f
+  U14129/Y (NOR2XL)                        0.14       9.99 r
+  U14132/Y (AOI211XL)                      0.08      10.07 f
+  pip3_frac_result_reg[99]/D (DFFSX1)      0.00      10.07 f
+  data arrival time                                  10.07
+
+  clock clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)              0.50      10.50
+  clock uncertainty                       -0.10      10.40
+  pip3_frac_result_reg[99]/CK (DFFSX1)     0.00      10.40 r
+  library setup time                      -0.31      10.09
+  data required time                                 10.09
+  -----------------------------------------------------------
+  data required time                                 10.09
+  data arrival time                                 -10.07
+  -----------------------------------------------------------
+  slack (MET)                                         0.02
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[101]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)                          0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)                          0.53       1.03 f
+  U9926/Y (NOR2X2)                                        0.17       1.20 r
+  U9928/Y (NAND2XL)                                       0.13       1.33 f
+  U9931/Y (NOR3XL)                                        0.23       1.56 r
+  U9509/Y (NAND4XL)                                       0.17       1.73 f
+  U9426/Y (NOR2X1)                                        0.22       1.94 r
+  U7072/Y (NAND2XL)                                       0.12       2.07 f
+  U9263/Y (NOR2X1)                                        0.19       2.25 r
+  U9889/Y (NAND2X1)                                       0.13       2.39 f
+  U9131/Y (NOR2X1)                                        0.16       2.54 r
+  U9890/Y (NAND2X1)                                       0.15       2.69 f
+  U8942/Y (NOR2X2)                                        0.15       2.84 r
+  U9891/Y (NAND2X1)                                       0.12       2.96 f
+  U8632/Y (NOR2X1)                                        0.15       3.12 r
+  U9944/Y (NAND2X1)                                       0.10       3.22 f
+  U6865/Y (NOR2X1)                                        0.18       3.40 r
+  U8445/Y (NAND2X1)                                       0.13       3.54 f
+  U6858/Y (NOR2X1)                                        0.16       3.69 r
+  U9894/Y (NAND2X1)                                       0.17       3.86 f
+  U9945/Y (NOR2X2)                                        0.12       3.98 r
+  U9880/Y (NAND2X1)                                       0.10       4.08 f
+  U9946/Y (NOR2X1)                                        0.18       4.27 r
+  U9947/Y (NAND2X1)                                       0.14       4.41 f
+  U9948/Y (NOR2X2)                                        0.13       4.54 r
+  U6830/Y (NAND2X1)                                       0.12       4.66 f
+  U9949/Y (NOR2X2)                                        0.16       4.82 r
+  U9950/Y (NAND2X2)                                       0.09       4.91 f
+  U9951/Y (NOR2X2)                                        0.12       5.02 r
+  U9952/Y (NAND2X1)                                       0.17       5.19 f
+  U9953/Y (NOR2X4)                                        0.17       5.36 r
+  U9987/Y (INVX4)                                         0.06       5.42 f
+  U8039/Y (NOR2X2)                                        0.11       5.53 r
+  U10291/Y (NAND2X2)                                      0.08       5.61 f
+  U10292/Y (CLKINVX2)                                     0.09       5.70 r
+  U10293/Y (NAND2X1)                                      0.14       5.84 f
+  U7881/Y (INVX1)                                         0.09       5.94 r
+  U10318/Y (NAND2XL)                                      0.11       6.04 f
+  U10321/Y (CLKINVX2)                                     0.08       6.12 r
+  U10322/Y (NAND2X1)                                      0.14       6.27 f
+  U10325/Y (NOR2X2)                                       0.14       6.41 r
+  U10328/Y (OAI21X1)                                      0.10       6.51 f
+  U10329/Y (OR2X2)                                        0.22       6.72 f
+  U10331/Y (NAND2XL)                                      0.14       6.87 r
+  U10336/Y (OR2X2)                                        0.16       7.02 r
+  U10340/Y (OAI21XL)                                      0.10       7.13 f
+  U10341/Y (OAI2BB1X2)                                    0.20       7.33 f
+  U10342/Y (AOI21X1)                                      0.18       7.51 r
+  U7454/Y (NOR2X1)                                        0.09       7.60 f
+  U10343/Y (NOR3X1)                                       0.21       7.82 r
+  U10344/Y (OAI22X2)                                      0.17       7.99 f
+  U9893/Y (AOI21X1)                                       0.29       8.28 r
+  U10365/Y (NOR3X1)                                       0.12       8.40 f
+  U10366/Y (NAND3X1)                                      0.15       8.55 r
+  U7310/Y (NOR3X1)                                        0.10       8.66 f
+  U10367/Y (AOI211X2)                                     0.29       8.95 r
+  U9907/Y (NOR2X1)                                        0.10       9.04 f
+  U6623/Y (NOR2X1)                                        0.20       9.24 r
+  U7213/Y (NOR3X2)                                        0.07       9.31 f
+  U6683/Y (AOI211X1)                                      0.26       9.57 r
+  U6722/Y (NAND2BXL)                                      0.20       9.77 r
+  U7163/Y (NAND2XL)                                       0.08       9.85 f
+  U14121/Y (OAI211XL)                                     0.13       9.98 r
+  U14122/Y (AOI31XL)                                      0.08      10.06 f
+  pip3_frac_result_reg[101]/D (DFFSX1)                    0.00      10.06 f
+  data arrival time                                                 10.06
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip3_frac_result_reg[101]/CK (DFFSX1)                   0.00      10.40 r
+  library setup time                                     -0.31      10.09
+  data required time                                                10.09
+  --------------------------------------------------------------------------
+  data required time                                                10.09
+  data arrival time                                                -10.06
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.03
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[106]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)                          0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)                          0.53       1.03 f
+  U9926/Y (NOR2X2)                                        0.17       1.20 r
+  U9928/Y (NAND2XL)                                       0.13       1.33 f
+  U9931/Y (NOR3XL)                                        0.23       1.56 r
+  U9509/Y (NAND4XL)                                       0.17       1.73 f
+  U9426/Y (NOR2X1)                                        0.22       1.94 r
+  U7072/Y (NAND2XL)                                       0.12       2.07 f
+  U9263/Y (NOR2X1)                                        0.19       2.25 r
+  U9889/Y (NAND2X1)                                       0.13       2.39 f
+  U9131/Y (NOR2X1)                                        0.16       2.54 r
+  U9890/Y (NAND2X1)                                       0.15       2.69 f
+  U8942/Y (NOR2X2)                                        0.15       2.84 r
+  U9891/Y (NAND2X1)                                       0.12       2.96 f
+  U8632/Y (NOR2X1)                                        0.15       3.12 r
+  U9944/Y (NAND2X1)                                       0.10       3.22 f
+  U6865/Y (NOR2X1)                                        0.18       3.40 r
+  U8445/Y (NAND2X1)                                       0.13       3.54 f
+  U6858/Y (NOR2X1)                                        0.16       3.69 r
+  U9894/Y (NAND2X1)                                       0.17       3.86 f
+  U9945/Y (NOR2X2)                                        0.12       3.98 r
+  U9880/Y (NAND2X1)                                       0.10       4.08 f
+  U9946/Y (NOR2X1)                                        0.18       4.27 r
+  U9947/Y (NAND2X1)                                       0.14       4.41 f
+  U9948/Y (NOR2X2)                                        0.13       4.54 r
+  U6830/Y (NAND2X1)                                       0.12       4.66 f
+  U9949/Y (NOR2X2)                                        0.16       4.82 r
+  U9950/Y (NAND2X2)                                       0.09       4.91 f
+  U9951/Y (NOR2X2)                                        0.12       5.02 r
+  U9952/Y (NAND2X1)                                       0.17       5.19 f
+  U9953/Y (NOR2X4)                                        0.17       5.36 r
+  U9987/Y (INVX4)                                         0.06       5.42 f
+  U8039/Y (NOR2X2)                                        0.11       5.53 r
+  U10291/Y (NAND2X2)                                      0.08       5.61 f
+  U10292/Y (CLKINVX2)                                     0.09       5.70 r
+  U10293/Y (NAND2X1)                                      0.14       5.84 f
+  U7881/Y (INVX1)                                         0.09       5.94 r
+  U10318/Y (NAND2XL)                                      0.11       6.04 f
+  U10321/Y (CLKINVX2)                                     0.08       6.12 r
+  U10322/Y (NAND2X1)                                      0.14       6.27 f
+  U10325/Y (NOR2X2)                                       0.14       6.41 r
+  U10327/Y (NAND2X1)                                      0.09       6.50 f
+  U10328/Y (OAI21X1)                                      0.11       6.61 r
+  U10329/Y (OR2X2)                                        0.17       6.78 r
+  U10331/Y (NAND2XL)                                      0.11       6.89 f
+  U10336/Y (OR2X2)                                        0.22       7.10 f
+  U10340/Y (OAI21XL)                                      0.19       7.30 r
+  U10341/Y (OAI2BB1X2)                                    0.21       7.50 r
+  U10342/Y (AOI21X1)                                      0.11       7.61 f
+  U7454/Y (NOR2X1)                                        0.17       7.78 r
+  U10343/Y (NOR3X1)                                       0.10       7.88 f
+  U10344/Y (OAI22X2)                                      0.26       8.14 r
+  U9893/Y (AOI21X1)                                       0.19       8.33 f
+  U10365/Y (NOR3X1)                                       0.22       8.55 r
+  U10366/Y (NAND3X1)                                      0.13       8.68 f
+  U7310/Y (NOR3X1)                                        0.23       8.91 r
+  U10367/Y (AOI211X2)                                     0.14       9.05 f
+  U14096/Y (NOR3XL)                                       0.21       9.26 r
+  U14097/Y (AOI211X1)                                     0.10       9.36 f
+  U7219/Y (OAI22X1)                                       0.21       9.57 r
+  U9909/Y (OAI22X1)                                       0.14       9.71 f
+  U7175/Y (OAI21XL)                                       0.24       9.95 r
+  U14103/Y (AOI211XL)                                     0.10      10.05 f
+  U14113/Y (AOI211XL)                                     0.18      10.23 r
+  pip3_frac_result_reg[106]/D (DFFSX1)                    0.00      10.23 r
+  data arrival time                                                 10.23
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip3_frac_result_reg[106]/CK (DFFSX1)                   0.00      10.40 r
+  library setup time                                     -0.13      10.27
+  data required time                                                10.27
+  --------------------------------------------------------------------------
+  data required time                                                10.27
+  data arrival time                                                -10.23
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.04
+
+
+  Startpoint: pip3_frac_result_reg[65]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip4_exp_reg[10]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip3_frac_result_reg[65]/CK (DFFSX1)                    0.00       0.50 r
+  pip3_frac_result_reg[65]/QN (DFFSX1)                    0.50       1.00 f
+  U12738/Y (NOR2X1)                                       0.17       1.17 r
+  U12889/Y (NAND2XL)                                      0.19       1.36 f
+  U12903/Y (NOR2X2)                                       0.19       1.55 r
+  U12946/Y (NAND2XL)                                      0.17       1.71 f
+  U12947/Y (NOR2XL)                                       0.16       1.87 r
+  U7080/Y (BUFX2)                                         0.23       2.10 r
+  U13001/Y (NAND2XL)                                      0.08       2.18 f
+  U13002/Y (NOR2XL)                                       0.17       2.36 r
+  U13003/Y (XOR2X1)                                       0.24       2.60 f
+  U6653/Y (MXI2X1)                                        0.26       2.86 r
+  U13007/Y (NAND2XL)                                      0.12       2.97 f
+  U9852/Y (NOR3X1)                                        0.29       3.26 r
+  U9851/Y (NAND4X2)                                       0.21       3.48 f
+  U13072/Y (AOI21X2)                                      0.19       3.66 r
+  U6643/Y (INVX1)                                         0.21       3.87 f
+  U13094/Y (NOR2XL)                                       0.15       4.02 r
+  U13095/Y (NOR2XL)                                       0.09       4.11 f
+  U13098/Y (NAND4X1)                                      0.21       4.32 r
+  U13099/Y (NOR2X4)                                       0.13       4.46 f
+  U9848/Y (AOI21X1)                                       0.15       4.61 r
+  U13119/Y (OAI21XL)                                      0.12       4.73 f
+  U6826/Y (NOR2X1)                                        0.16       4.89 r
+  U13126/Y (NAND2X1)                                      0.10       4.98 f
+  U13127/Y (NOR2X2)                                       0.18       5.16 r
+  U13128/Y (INVX1)                                        0.08       5.24 f
+  U13158/Y (NOR2X2)                                       0.19       5.43 r
+  U13159/Y (OAI2BB1X2)                                    0.07       5.51 f
+  U13165/Y (NAND3X2)                                      0.17       5.68 r
+  U8008/Y (OAI21XL)                                       0.14       5.81 f
+  U7975/Y (AOI21X1)                                       0.21       6.02 r
+  U13189/Y (NAND2X2)                                      0.14       6.16 f
+  U13190/Y (NAND2X4)                                      0.12       6.27 r
+  U13192/Y (NOR2X4)                                       0.07       6.35 f
+  U13193/Y (NAND2X4)                                      0.10       6.45 r
+  U7719/Y (BUFX20)                                        0.18       6.63 r
+  U13220/Y (NAND2X2)                                      0.09       6.72 f
+  U13221/Y (OR2X4)                                        0.20       6.92 f
+  U7568/Y (NAND3X1)                                       0.13       7.05 r
+  U13226/Y (NAND3X2)                                      0.09       7.14 f
+  U13227/Y (NAND3X2)                                      0.15       7.29 r
+  U13236/Y (NAND3X4)                                      0.13       7.42 f
+  U13249/Y (BUFX3)                                        0.18       7.60 f
+  U13250/Y (MXI2X1)                                       0.16       7.76 r
+  U6702/Y (CLKBUFX8)                                      0.38       8.14 r
+  U13251/Y (INVX4)                                        0.06       8.20 f
+  U13254/Y (NAND2X1)                                      0.09       8.30 r
+  U13255/Y (INVXL)                                        0.09       8.39 f
+  U7305/Y (AOI21X1)                                       0.14       8.53 r
+  U6682/Y (OAI21XL)                                       0.17       8.69 f
+  U6624/Y (AOI21X1)                                       0.16       8.86 r
+  U6622/Y (INVX1)                                         0.08       8.94 f
+  U7217/Y (OR2X2)                                         0.22       9.16 f
+  U7186/Y (OR2X2)                                         0.21       9.37 f
+  U7173/Y (OR2X2)                                         0.20       9.57 f
+  U6719/Y (XNOR2X1)                                       0.25       9.83 r
+  U6715/Y (MXI2X1)                                        0.09       9.91 f
+  U7146/Y (NAND2BXL)                                      0.17      10.09 f
+  pip4_exp_reg[10]/D (DFFSX1)                             0.00      10.09 f
+  data arrival time                                                 10.09
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip4_exp_reg[10]/CK (DFFSX1)                            0.00      10.40 r
+  library setup time                                     -0.27      10.13
+  data required time                                                10.13
+  --------------------------------------------------------------------------
+  data required time                                                10.13
+  data arrival time                                                -10.09
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.04
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[98]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)           0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)           0.53       1.03 f
+  U9926/Y (NOR2X2)                         0.17       1.20 r
+  U9928/Y (NAND2XL)                        0.13       1.33 f
+  U9931/Y (NOR3XL)                         0.23       1.56 r
+  U9509/Y (NAND4XL)                        0.17       1.73 f
+  U9426/Y (NOR2X1)                         0.22       1.94 r
+  U7072/Y (NAND2XL)                        0.12       2.07 f
+  U9263/Y (NOR2X1)                         0.19       2.25 r
+  U9889/Y (NAND2X1)                        0.13       2.39 f
+  U9131/Y (NOR2X1)                         0.16       2.54 r
+  U9890/Y (NAND2X1)                        0.15       2.69 f
+  U8942/Y (NOR2X2)                         0.15       2.84 r
+  U9891/Y (NAND2X1)                        0.12       2.96 f
+  U8632/Y (NOR2X1)                         0.15       3.12 r
+  U9944/Y (NAND2X1)                        0.10       3.22 f
+  U6865/Y (NOR2X1)                         0.18       3.40 r
+  U8445/Y (NAND2X1)                        0.13       3.54 f
+  U6858/Y (NOR2X1)                         0.16       3.69 r
+  U9894/Y (NAND2X1)                        0.17       3.86 f
+  U9945/Y (NOR2X2)                         0.12       3.98 r
+  U9880/Y (NAND2X1)                        0.10       4.08 f
+  U9946/Y (NOR2X1)                         0.18       4.27 r
+  U9947/Y (NAND2X1)                        0.14       4.41 f
+  U9948/Y (NOR2X2)                         0.13       4.54 r
+  U6830/Y (NAND2X1)                        0.12       4.66 f
+  U9949/Y (NOR2X2)                         0.16       4.82 r
+  U9950/Y (NAND2X2)                        0.09       4.91 f
+  U9951/Y (NOR2X2)                         0.12       5.02 r
+  U9952/Y (NAND2X1)                        0.17       5.19 f
+  U9953/Y (NOR2X4)                         0.17       5.36 r
+  U9987/Y (INVX4)                          0.06       5.42 f
+  U8039/Y (NOR2X2)                         0.11       5.53 r
+  U10291/Y (NAND2X2)                       0.08       5.61 f
+  U10292/Y (CLKINVX2)                      0.09       5.70 r
+  U10293/Y (NAND2X1)                       0.14       5.84 f
+  U7881/Y (INVX1)                          0.09       5.94 r
+  U10318/Y (NAND2XL)                       0.11       6.04 f
+  U10321/Y (CLKINVX2)                      0.08       6.12 r
+  U10322/Y (NAND2X1)                       0.14       6.27 f
+  U10325/Y (NOR2X2)                        0.14       6.41 r
+  U10327/Y (NAND2X1)                       0.09       6.50 f
+  U10328/Y (OAI21X1)                       0.11       6.61 r
+  U10329/Y (OR2X2)                         0.17       6.78 r
+  U10331/Y (NAND2XL)                       0.11       6.89 f
+  U10336/Y (OR2X2)                         0.22       7.10 f
+  U10340/Y (OAI21XL)                       0.19       7.30 r
+  U10341/Y (OAI2BB1X2)                     0.21       7.50 r
+  U10342/Y (AOI21X1)                       0.11       7.61 f
+  U7454/Y (NOR2X1)                         0.17       7.78 r
+  U10343/Y (NOR3X1)                        0.10       7.88 f
+  U10344/Y (OAI22X2)                       0.26       8.14 r
+  U9893/Y (AOI21X1)                        0.19       8.33 f
+  U10365/Y (NOR3X1)                        0.22       8.55 r
+  U10366/Y (NAND3X1)                       0.13       8.68 f
+  U7310/Y (NOR3X1)                         0.23       8.91 r
+  U10367/Y (AOI211X2)                      0.14       9.05 f
+  U9907/Y (NOR2X1)                         0.17       9.21 r
+  U6623/Y (NOR2X1)                         0.11       9.32 f
+  U6689/Y (OR2XL)                          0.28       9.59 f
+  U7194/Y (OAI2BB1XL)                      0.20       9.80 f
+  U9911/Y (AOI21XL)                        0.17       9.97 r
+  U7169/Y (AOI211XL)                       0.10      10.07 f
+  pip3_frac_result_reg[98]/D (DFFSX1)      0.00      10.07 f
+  data arrival time                                  10.07
+
+  clock clk (rise edge)                   10.00      10.00
+  clock network delay (ideal)              0.50      10.50
+  clock uncertainty                       -0.10      10.40
+  pip3_frac_result_reg[98]/CK (DFFSX1)     0.00      10.40 r
+  library setup time                      -0.28      10.12
+  data required time                                 10.12
+  -----------------------------------------------------------
+  data required time                                 10.12
+  data arrival time                                 -10.07
+  -----------------------------------------------------------
+  slack (MET)                                         0.05
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[105]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)                          0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)                          0.53       1.03 f
+  U9926/Y (NOR2X2)                                        0.17       1.20 r
+  U9928/Y (NAND2XL)                                       0.13       1.33 f
+  U9931/Y (NOR3XL)                                        0.23       1.56 r
+  U9509/Y (NAND4XL)                                       0.17       1.73 f
+  U9426/Y (NOR2X1)                                        0.22       1.94 r
+  U7072/Y (NAND2XL)                                       0.12       2.07 f
+  U9263/Y (NOR2X1)                                        0.19       2.25 r
+  U9889/Y (NAND2X1)                                       0.13       2.39 f
+  U9131/Y (NOR2X1)                                        0.16       2.54 r
+  U9890/Y (NAND2X1)                                       0.15       2.69 f
+  U8942/Y (NOR2X2)                                        0.15       2.84 r
+  U9891/Y (NAND2X1)                                       0.12       2.96 f
+  U8632/Y (NOR2X1)                                        0.15       3.12 r
+  U9944/Y (NAND2X1)                                       0.10       3.22 f
+  U6865/Y (NOR2X1)                                        0.18       3.40 r
+  U8445/Y (NAND2X1)                                       0.13       3.54 f
+  U6858/Y (NOR2X1)                                        0.16       3.69 r
+  U9894/Y (NAND2X1)                                       0.17       3.86 f
+  U9945/Y (NOR2X2)                                        0.12       3.98 r
+  U9880/Y (NAND2X1)                                       0.10       4.08 f
+  U9946/Y (NOR2X1)                                        0.18       4.27 r
+  U9947/Y (NAND2X1)                                       0.14       4.41 f
+  U9948/Y (NOR2X2)                                        0.13       4.54 r
+  U6830/Y (NAND2X1)                                       0.12       4.66 f
+  U9949/Y (NOR2X2)                                        0.16       4.82 r
+  U9950/Y (NAND2X2)                                       0.09       4.91 f
+  U9951/Y (NOR2X2)                                        0.12       5.02 r
+  U9952/Y (NAND2X1)                                       0.17       5.19 f
+  U9953/Y (NOR2X4)                                        0.17       5.36 r
+  U9987/Y (INVX4)                                         0.06       5.42 f
+  U8039/Y (NOR2X2)                                        0.11       5.53 r
+  U10291/Y (NAND2X2)                                      0.08       5.61 f
+  U10292/Y (CLKINVX2)                                     0.09       5.70 r
+  U10293/Y (NAND2X1)                                      0.14       5.84 f
+  U7881/Y (INVX1)                                         0.09       5.94 r
+  U10318/Y (NAND2XL)                                      0.11       6.04 f
+  U10321/Y (CLKINVX2)                                     0.08       6.12 r
+  U10322/Y (NAND2X1)                                      0.14       6.27 f
+  U10325/Y (NOR2X2)                                       0.14       6.41 r
+  U10327/Y (NAND2X1)                                      0.09       6.50 f
+  U10328/Y (OAI21X1)                                      0.11       6.61 r
+  U10329/Y (OR2X2)                                        0.17       6.78 r
+  U10331/Y (NAND2XL)                                      0.11       6.89 f
+  U10336/Y (OR2X2)                                        0.22       7.10 f
+  U10340/Y (OAI21XL)                                      0.19       7.30 r
+  U10341/Y (OAI2BB1X2)                                    0.21       7.50 r
+  U10342/Y (AOI21X1)                                      0.11       7.61 f
+  U7454/Y (NOR2X1)                                        0.17       7.78 r
+  U10343/Y (NOR3X1)                                       0.10       7.88 f
+  U10344/Y (OAI22X2)                                      0.26       8.14 r
+  U9893/Y (AOI21X1)                                       0.19       8.33 f
+  U10365/Y (NOR3X1)                                       0.22       8.55 r
+  U10366/Y (NAND3X1)                                      0.13       8.68 f
+  U7310/Y (NOR3X1)                                        0.23       8.91 r
+  U10367/Y (AOI211X2)                                     0.14       9.05 f
+  U14096/Y (NOR3XL)                                       0.21       9.26 r
+  U14097/Y (AOI211X1)                                     0.10       9.36 f
+  U7219/Y (OAI22X1)                                       0.21       9.57 r
+  U9909/Y (OAI22X1)                                       0.14       9.71 f
+  U7175/Y (OAI21XL)                                       0.24       9.95 r
+  U14147/Y (AOI21XL)                                      0.09      10.04 f
+  U14148/Y (AOI211XL)                                     0.18      10.21 r
+  pip3_frac_result_reg[105]/D (DFFSX1)                    0.00      10.21 r
+  data arrival time                                                 10.21
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip3_frac_result_reg[105]/CK (DFFSX1)                   0.00      10.40 r
+  library setup time                                     -0.13      10.27
+  data required time                                                10.27
+  --------------------------------------------------------------------------
+  data required time                                                10.27
+  data arrival time                                                -10.21
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.05
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[104]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)                          0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)                          0.53       1.03 f
+  U9926/Y (NOR2X2)                                        0.17       1.20 r
+  U9928/Y (NAND2XL)                                       0.13       1.33 f
+  U9931/Y (NOR3XL)                                        0.23       1.56 r
+  U9509/Y (NAND4XL)                                       0.17       1.73 f
+  U9426/Y (NOR2X1)                                        0.22       1.94 r
+  U7072/Y (NAND2XL)                                       0.12       2.07 f
+  U9263/Y (NOR2X1)                                        0.19       2.25 r
+  U9889/Y (NAND2X1)                                       0.13       2.39 f
+  U9131/Y (NOR2X1)                                        0.16       2.54 r
+  U9890/Y (NAND2X1)                                       0.15       2.69 f
+  U8942/Y (NOR2X2)                                        0.15       2.84 r
+  U9891/Y (NAND2X1)                                       0.12       2.96 f
+  U8632/Y (NOR2X1)                                        0.15       3.12 r
+  U9944/Y (NAND2X1)                                       0.10       3.22 f
+  U6865/Y (NOR2X1)                                        0.18       3.40 r
+  U8445/Y (NAND2X1)                                       0.13       3.54 f
+  U6858/Y (NOR2X1)                                        0.16       3.69 r
+  U9894/Y (NAND2X1)                                       0.17       3.86 f
+  U9945/Y (NOR2X2)                                        0.12       3.98 r
+  U9880/Y (NAND2X1)                                       0.10       4.08 f
+  U9946/Y (NOR2X1)                                        0.18       4.27 r
+  U9947/Y (NAND2X1)                                       0.14       4.41 f
+  U9948/Y (NOR2X2)                                        0.13       4.54 r
+  U6830/Y (NAND2X1)                                       0.12       4.66 f
+  U9949/Y (NOR2X2)                                        0.16       4.82 r
+  U9950/Y (NAND2X2)                                       0.09       4.91 f
+  U9951/Y (NOR2X2)                                        0.12       5.02 r
+  U9952/Y (NAND2X1)                                       0.17       5.19 f
+  U9953/Y (NOR2X4)                                        0.17       5.36 r
+  U9987/Y (INVX4)                                         0.06       5.42 f
+  U8039/Y (NOR2X2)                                        0.11       5.53 r
+  U10291/Y (NAND2X2)                                      0.08       5.61 f
+  U10292/Y (CLKINVX2)                                     0.09       5.70 r
+  U10293/Y (NAND2X1)                                      0.14       5.84 f
+  U7881/Y (INVX1)                                         0.09       5.94 r
+  U10318/Y (NAND2XL)                                      0.11       6.04 f
+  U10321/Y (CLKINVX2)                                     0.08       6.12 r
+  U10322/Y (NAND2X1)                                      0.14       6.27 f
+  U10325/Y (NOR2X2)                                       0.14       6.41 r
+  U10327/Y (NAND2X1)                                      0.09       6.50 f
+  U10328/Y (OAI21X1)                                      0.11       6.61 r
+  U10329/Y (OR2X2)                                        0.17       6.78 r
+  U10331/Y (NAND2XL)                                      0.11       6.89 f
+  U10336/Y (OR2X2)                                        0.22       7.10 f
+  U10340/Y (OAI21XL)                                      0.19       7.30 r
+  U10341/Y (OAI2BB1X2)                                    0.21       7.50 r
+  U10342/Y (AOI21X1)                                      0.11       7.61 f
+  U7454/Y (NOR2X1)                                        0.17       7.78 r
+  U10343/Y (NOR3X1)                                       0.10       7.88 f
+  U10344/Y (OAI22X2)                                      0.26       8.14 r
+  U9893/Y (AOI21X1)                                       0.19       8.33 f
+  U10365/Y (NOR3X1)                                       0.22       8.55 r
+  U10366/Y (NAND3X1)                                      0.13       8.68 f
+  U7310/Y (NOR3X1)                                        0.23       8.91 r
+  U10367/Y (AOI211X2)                                     0.14       9.05 f
+  U14096/Y (NOR3XL)                                       0.21       9.26 r
+  U14097/Y (AOI211X1)                                     0.10       9.36 f
+  U7219/Y (OAI22X1)                                       0.21       9.57 r
+  U7190/Y (XNOR2XL)                                       0.36       9.93 r
+  U14146/Y (OAI21XL)                                      0.10      10.03 f
+  pip3_frac_result_reg[104]/D (DFFSX1)                    0.00      10.03 f
+  data arrival time                                                 10.03
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip3_frac_result_reg[104]/CK (DFFSX1)                   0.00      10.40 r
+  library setup time                                     -0.29      10.11
+  data required time                                                10.11
+  --------------------------------------------------------------------------
+  data required time                                                10.11
+  data arrival time                                                -10.03
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.08
+
+
+  Startpoint: pip2_frac_a_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip3_frac_result_reg[103]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.50       0.50
+  pip2_frac_a_reg[0]/CK (DFFSX1)                          0.00       0.50 r
+  pip2_frac_a_reg[0]/QN (DFFSX1)                          0.53       1.03 f
+  U9926/Y (NOR2X2)                                        0.17       1.20 r
+  U9928/Y (NAND2XL)                                       0.13       1.33 f
+  U9931/Y (NOR3XL)                                        0.23       1.56 r
+  U9509/Y (NAND4XL)                                       0.17       1.73 f
+  U9426/Y (NOR2X1)                                        0.22       1.94 r
+  U7072/Y (NAND2XL)                                       0.12       2.07 f
+  U9263/Y (NOR2X1)                                        0.19       2.25 r
+  U9889/Y (NAND2X1)                                       0.13       2.39 f
+  U9131/Y (NOR2X1)                                        0.16       2.54 r
+  U9890/Y (NAND2X1)                                       0.15       2.69 f
+  U8942/Y (NOR2X2)                                        0.15       2.84 r
+  U9891/Y (NAND2X1)                                       0.12       2.96 f
+  U8632/Y (NOR2X1)                                        0.15       3.12 r
+  U9944/Y (NAND2X1)                                       0.10       3.22 f
+  U6865/Y (NOR2X1)                                        0.18       3.40 r
+  U8445/Y (NAND2X1)                                       0.13       3.54 f
+  U6858/Y (NOR2X1)                                        0.16       3.69 r
+  U9894/Y (NAND2X1)                                       0.17       3.86 f
+  U9945/Y (NOR2X2)                                        0.12       3.98 r
+  U9880/Y (NAND2X1)                                       0.10       4.08 f
+  U9946/Y (NOR2X1)                                        0.18       4.27 r
+  U9947/Y (NAND2X1)                                       0.14       4.41 f
+  U9948/Y (NOR2X2)                                        0.13       4.54 r
+  U6830/Y (NAND2X1)                                       0.12       4.66 f
+  U9949/Y (NOR2X2)                                        0.16       4.82 r
+  U9950/Y (NAND2X2)                                       0.09       4.91 f
+  U9951/Y (NOR2X2)                                        0.12       5.02 r
+  U9952/Y (NAND2X1)                                       0.17       5.19 f
+  U9953/Y (NOR2X4)                                        0.17       5.36 r
+  U9987/Y (INVX4)                                         0.06       5.42 f
+  U8039/Y (NOR2X2)                                        0.11       5.53 r
+  U10291/Y (NAND2X2)                                      0.08       5.61 f
+  U10292/Y (CLKINVX2)                                     0.09       5.70 r
+  U10293/Y (NAND2X1)                                      0.14       5.84 f
+  U7881/Y (INVX1)                                         0.09       5.94 r
+  U10318/Y (NAND2XL)                                      0.11       6.04 f
+  U10321/Y (CLKINVX2)                                     0.08       6.12 r
+  U10322/Y (NAND2X1)                                      0.14       6.27 f
+  U10325/Y (NOR2X2)                                       0.14       6.41 r
+  U10328/Y (OAI21X1)                                      0.10       6.51 f
+  U10329/Y (OR2X2)                                        0.22       6.72 f
+  U10331/Y (NAND2XL)                                      0.14       6.87 r
+  U10336/Y (OR2X2)                                        0.16       7.02 r
+  U10340/Y (OAI21XL)                                      0.10       7.13 f
+  U10341/Y (OAI2BB1X2)                                    0.20       7.33 f
+  U10342/Y (AOI21X1)                                      0.18       7.51 r
+  U7454/Y (NOR2X1)                                        0.09       7.60 f
+  U10343/Y (NOR3X1)                                       0.21       7.82 r
+  U10344/Y (OAI22X2)                                      0.17       7.99 f
+  U9893/Y (AOI21X1)                                       0.29       8.28 r
+  U10365/Y (NOR3X1)                                       0.12       8.40 f
+  U10366/Y (NAND3X1)                                      0.15       8.55 r
+  U7310/Y (NOR3X1)                                        0.10       8.66 f
+  U10367/Y (AOI211X2)                                     0.29       8.95 r
+  U7251/Y (INVXL)                                         0.08       9.03 f
+  U9906/Y (AOI21X1)                                       0.23       9.26 r
+  U14134/Y (INVXL)                                        0.08       9.34 f
+  U7192/Y (AOI22X1)                                       0.24       9.59 r
+  U14136/Y (XOR2X1)                                       0.29       9.87 r
+  U14139/Y (AOI21XL)                                      0.09       9.96 f
+  pip3_frac_result_reg[103]/D (DFFSX1)                    0.00       9.96 f
+  data arrival time                                                  9.96
+
+  clock clk (rise edge)                                  10.00      10.00
+  clock network delay (ideal)                             0.50      10.50
+  clock uncertainty                                      -0.10      10.40
+  pip3_frac_result_reg[103]/CK (DFFSX1)                   0.00      10.40 r
+  library setup time                                     -0.31      10.09
+  data required time                                                10.09
+  --------------------------------------------------------------------------
+  data required time                                                10.09
+  data arrival time                                                 -9.96
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.13
+
+
+1
