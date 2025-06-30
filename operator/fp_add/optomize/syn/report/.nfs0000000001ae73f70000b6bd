@@ -1,0 +1,573 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : fp_add
+Version: U-2022.12
+Date   : Mon Jun 30 19:23:42 2025
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[49]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5748/Y (INVX8)                          0.06       2.79 f
+  U5488/Y (NAND2X4)                        0.12       2.91 r
+  U5487/Y (CLKINVX8)                       0.20       3.11 f
+  U5006/Y (BUFX20)                         0.18       3.29 f
+  U5053/Y (AOI21X4)                        0.13       3.42 r
+  U5386/Y (NAND3X2)                        0.08       3.50 f
+  U5324/Y (OAI21X2)                        0.10       3.60 r
+  U5920/Y (NAND3X2)                        0.10       3.70 f
+  U4959/Y (NAND3X2)                        0.11       3.82 r
+  U5926/Y (NAND2X2)                        0.09       3.90 f
+  U6032/Y (AND2X4)                         0.16       4.07 f
+  U5185/Y (AOI22X1)                        0.11       4.18 r
+  pip5_frac_reg[49]/D (DFFSX1)             0.00       4.18 r
+  data arrival time                                   4.18
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[49]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.12       3.78
+  data required time                                  3.78
+  -----------------------------------------------------------
+  data required time                                  3.78
+  data arrival time                                  -4.18
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[43]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5755/Y (NAND2X4)                        0.20       2.93 f
+  U5541/Y (AOI2BB2X1)                      0.32       3.25 f
+  U5840/Y (NAND2X2)                        0.13       3.37 r
+  U5178/Y (AOI22X1)                        0.17       3.54 f
+  U5381/Y (OAI2BB1X4)                      0.12       3.66 r
+  U6014/Y (AOI22X1)                        0.12       3.78 f
+  U5482/Y (AOI2BB2X1)                      0.26       4.04 f
+  pip5_frac_reg[43]/D (DFFSX1)             0.00       4.04 f
+  data arrival time                                   4.04
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[43]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.27       3.63
+  data required time                                  3.63
+  -----------------------------------------------------------
+  data required time                                  3.63
+  data arrival time                                  -4.04
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[44]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5755/Y (NAND2X4)                        0.20       2.93 f
+  U5541/Y (AOI2BB2X1)                      0.32       3.25 f
+  U5840/Y (NAND2X2)                        0.13       3.37 r
+  U5178/Y (AOI22X1)                        0.17       3.54 f
+  U5381/Y (OAI2BB1X4)                      0.12       3.66 r
+  U6014/Y (AOI22X1)                        0.12       3.78 f
+  U6018/Y (AOI2BB2X1)                      0.26       4.04 f
+  pip5_frac_reg[44]/D (DFFSX1)             0.00       4.04 f
+  data arrival time                                   4.04
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[44]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.27       3.63
+  data required time                                  3.63
+  -----------------------------------------------------------
+  data required time                                  3.63
+  data arrival time                                  -4.04
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[25]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5748/Y (INVX8)                          0.06       2.79 f
+  U5754/Y (NAND2X4)                        0.13       2.92 r
+  U5394/Y (CLKINVX4)                       0.19       3.11 f
+  U5345/Y (AOI2BB2X1)                      0.30       3.41 r
+  U5408/Y (NAND2X4)                        0.09       3.50 f
+  U3347/Y (NAND2X1)                        0.16       3.66 r
+  U5352/Y (NAND2X1)                        0.08       3.74 f
+  U5455/Y (NOR2X1)                         0.14       3.88 r
+  U5496/Y (MXI2X2)                         0.13       4.01 f
+  U5442/Y (AOI2BB2X1)                      0.17       4.18 r
+  pip5_frac_reg[25]/D (DFFSX1)             0.00       4.18 r
+  data arrival time                                   4.18
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[25]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.12       3.78
+  data required time                                  3.78
+  -----------------------------------------------------------
+  data required time                                  3.78
+  data arrival time                                  -4.18
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[19]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5755/Y (NAND2X4)                        0.20       2.93 f
+  U5454/Y (CLKINVX4)                       0.08       3.00 r
+  U5469/Y (INVX4)                          0.04       3.05 f
+  U5843/Y (AOI2BB2X4)                      0.19       3.24 f
+  U4938/Y (NAND2X2)                        0.14       3.38 r
+  U4935/Y (NAND2X1)                        0.08       3.46 f
+  U5844/Y (NAND4X1)                        0.16       3.62 r
+  U5498/Y (MXI2X1)                         0.13       3.75 f
+  U5206/Y (AOI2BB2X1)                      0.28       4.04 f
+  pip5_frac_reg[19]/D (DFFSX1)             0.00       4.04 f
+  data arrival time                                   4.04
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[19]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.27       3.63
+  data required time                                  3.63
+  -----------------------------------------------------------
+  data required time                                  3.63
+  data arrival time                                  -4.04
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[41]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5748/Y (INVX8)                          0.06       2.79 f
+  U5488/Y (NAND2X4)                        0.12       2.91 r
+  U5487/Y (CLKINVX8)                       0.20       3.11 f
+  U5114/Y (AOI2BB2X2)                      0.20       3.31 r
+  U5047/Y (NAND3BX4)                       0.12       3.43 f
+  U5343/Y (CLKINVX2)                       0.06       3.49 r
+  U5062/Y (OAI2BB1X4)                      0.17       3.66 r
+  U5344/Y (INVX4)                          0.04       3.70 f
+  U5393/Y (NAND4X2)                        0.09       3.78 r
+  U5445/Y (NAND2X2)                        0.07       3.85 f
+  U5457/Y (NAND3X2)                        0.09       3.95 r
+  U5474/Y (AOI2BB2X1)                      0.09       4.03 f
+  pip5_frac_reg[41]/D (DFFSX1)             0.00       4.03 f
+  data arrival time                                   4.03
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[41]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.27       3.63
+  data required time                                  3.63
+  -----------------------------------------------------------
+  data required time                                  3.63
+  data arrival time                                  -4.03
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[20]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5755/Y (NAND2X4)                        0.20       2.93 f
+  U5454/Y (CLKINVX4)                       0.08       3.00 r
+  U5469/Y (INVX4)                          0.04       3.05 f
+  U5843/Y (AOI2BB2X4)                      0.19       3.24 f
+  U4938/Y (NAND2X2)                        0.14       3.38 r
+  U4935/Y (NAND2X1)                        0.08       3.46 f
+  U5844/Y (NAND4X1)                        0.16       3.62 r
+  U5498/Y (MXI2X1)                         0.13       3.75 f
+  U6008/Y (OAI21X1)                        0.19       3.95 r
+  U3525/Y (OAI21X1)                        0.09       4.03 f
+  pip5_frac_reg[20]/D (DFFSX1)             0.00       4.03 f
+  data arrival time                                   4.03
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[20]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.27       3.63
+  data required time                                  3.63
+  -----------------------------------------------------------
+  data required time                                  3.63
+  data arrival time                                  -4.03
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[48]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5748/Y (INVX8)                          0.06       2.79 f
+  U5488/Y (NAND2X4)                        0.12       2.91 r
+  U5487/Y (CLKINVX8)                       0.20       3.11 f
+  U5471/Y (AOI22X2)                        0.22       3.34 r
+  U5081/Y (NAND2X4)                        0.09       3.43 f
+  U5377/Y (NAND2X2)                        0.13       3.55 r
+  U5350/Y (NAND4X4)                        0.14       3.70 f
+  U5527/Y (MXI2X4)                         0.14       3.84 r
+  U4933/Y (NAND2X2)                        0.08       3.92 f
+  U3330/Y (NAND3X1)                        0.11       4.03 r
+  U5110/Y (CLKINVX2)                       0.06       4.10 f
+  U5111/Y (NOR2X1)                         0.09       4.18 r
+  pip5_frac_reg[48]/D (DFFSX1)             0.00       4.18 r
+  data arrival time                                   4.18
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[48]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.12       3.78
+  data required time                                  3.78
+  -----------------------------------------------------------
+  data required time                                  3.78
+  data arrival time                                  -4.18
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[22]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5755/Y (NAND2X4)                        0.20       2.93 f
+  U5315/Y (INVX4)                          0.11       3.04 r
+  U5763/Y (INVX8)                          0.07       3.11 f
+  U4945/Y (INVX8)                          0.08       3.19 r
+  U4939/Y (NAND2X4)                        0.05       3.24 f
+  U5851/Y (NAND4X2)                        0.14       3.38 r
+  U5852/Y (AOI22X2)                        0.14       3.52 f
+  U5117/Y (NAND3X1)                        0.14       3.65 r
+  U3483/Y (MXI2X1)                         0.11       3.77 f
+  U5434/Y (AOI2BB2X1)                      0.26       4.03 f
+  pip5_frac_reg[22]/D (DFFSX1)             0.00       4.03 f
+  data arrival time                                   4.03
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[22]/CK (DFFSX1)            0.00       3.90 r
+  library setup time                      -0.27       3.63
+  data required time                                  3.63
+  -----------------------------------------------------------
+  data required time                                  3.63
+  data arrival time                                  -4.03
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+  Startpoint: pip4_frac_reg[52]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_frac_reg[50]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_frac_reg[52]/CK (DFFSX4)            0.00       0.50 r
+  pip4_frac_reg[52]/QN (DFFSX4)            0.44       0.94 f
+  U5087/Y (NOR2X4)                         0.12       1.06 r
+  U5085/Y (NAND2X4)                        0.07       1.12 f
+  U5177/Y (NOR2X4)                         0.13       1.26 r
+  U5170/Y (NAND2X4)                        0.11       1.36 f
+  U5687/Y (CLKINVX8)                       0.10       1.46 r
+  U5175/Y (NAND3X2)                        0.13       1.59 f
+  U4982/Y (NAND2X4)                        0.11       1.70 r
+  U4971/Y (NOR2X1)                         0.09       1.79 f
+  U5292/Y (AOI21X2)                        0.15       1.94 r
+  U5166/Y (OAI21X2)                        0.10       2.04 f
+  U5735/Y (NOR2X2)                         0.14       2.18 r
+  U5736/Y (INVX2)                          0.05       2.24 f
+  U5155/Y (NAND2X2)                        0.09       2.32 r
+  U5142/Y (NAND2X2)                        0.07       2.39 f
+  U3869/Y (CLKINVX3)                       0.06       2.45 r
+  U5742/Y (NOR2X2)                         0.07       2.52 f
+  U5747/Y (NOR2X4)                         0.21       2.73 r
+  U5748/Y (INVX8)                          0.06       2.79 f
+  U5488/Y (NAND2X4)                        0.12       2.91 r
+  U5487/Y (CLKINVX8)                       0.20       3.11 f
+  U5898/Y (NAND2XL)                        0.19       3.30 r
+  U5899/Y (NAND4X2)                        0.15       3.45 f
+  U5515/Y (AOI22X2)                        0.22       3.67 r
+  U5444/Y (NAND4X1)                        0.11       3.78 f
+  U6030/Y (OAI2BB2X2)                      0.21       3.99 f
+  U6031/Y (AOI22X1)                        0.18       4.18 r
+  pip5_frac_reg[50]/D (DFFSX4)             0.00       4.18 r
+  data arrival time                                   4.18
+
+  clock clk (rise edge)                    3.50       3.50
+  clock network delay (ideal)              0.50       4.00
+  clock uncertainty                       -0.10       3.90
+  pip5_frac_reg[50]/CK (DFFSX4)            0.00       3.90 r
+  library setup time                      -0.12       3.78
+  data required time                                  3.78
+  -----------------------------------------------------------
+  data required time                                  3.78
+  data arrival time                                  -4.18
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.40
+
+
+1

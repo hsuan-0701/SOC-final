@@ -1,0 +1,159 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay min
+        -max_paths 5
+Design : fp_add
+Version: U-2022.12
+Date   : Mon Jun 30 19:48:49 2025
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pip4_v_reg (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_v_reg (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_v_reg/CK (DFFSX1)                   0.00       0.50 r
+  pip4_v_reg/Q (DFFSX1)                    0.48       0.98 f
+  pip5_v_reg/D (DFFSX4)                    0.00       0.98 f
+  data arrival time                                   0.98
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  pip5_v_reg/CK (DFFSX4)                   0.00       0.60 r
+  library hold time                       -0.08       0.52
+  data required time                                  0.52
+  -----------------------------------------------------------
+  data required time                                  0.52
+  data arrival time                                  -0.98
+  -----------------------------------------------------------
+  slack (MET)                                         0.45
+
+
+  Startpoint: pip4_sign_reg
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip5_sign_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip4_sign_reg/CK (DFFSX1)                0.00       0.50 r
+  pip4_sign_reg/QN (DFFSX1)                0.40       0.90 r
+  U6650/Y (NAND2BXL)                       0.07       0.96 f
+  pip5_sign_reg/D (DFFSX1)                 0.00       0.96 f
+  data arrival time                                   0.96
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  pip5_sign_reg/CK (DFFSX1)                0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -0.96
+  -----------------------------------------------------------
+  slack (MET)                                         0.46
+
+
+  Startpoint: pip1_NaN_reg
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip2_NaN_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip1_NaN_reg/CK (DFFSX1)                 0.00       0.50 r
+  pip1_NaN_reg/Q (DFFSX1)                  0.47       0.97 f
+  pip2_NaN_reg/D (DFFSX1)                  0.00       0.97 f
+  data arrival time                                   0.97
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  pip2_NaN_reg/CK (DFFSX1)                 0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -0.97
+  -----------------------------------------------------------
+  slack (MET)                                         0.47
+
+
+  Startpoint: pip1_exp_reg[1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip2_exp_reg[1]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip1_exp_reg[1]/CK (DFFSX1)              0.00       0.50 r
+  pip1_exp_reg[1]/Q (DFFSX1)               0.47       0.97 f
+  pip2_exp_reg[1]/D (DFFSX1)               0.00       0.97 f
+  data arrival time                                   0.97
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  pip2_exp_reg[1]/CK (DFFSX1)              0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -0.97
+  -----------------------------------------------------------
+  slack (MET)                                         0.47
+
+
+  Startpoint: pip1_exp_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip2_exp_reg[0]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip1_exp_reg[0]/CK (DFFSX1)              0.00       0.50 r
+  pip1_exp_reg[0]/Q (DFFSX1)               0.47       0.97 f
+  pip2_exp_reg[0]/D (DFFSX1)               0.00       0.97 f
+  data arrival time                                   0.97
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  pip2_exp_reg[0]/CK (DFFSX1)              0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -0.97
+  -----------------------------------------------------------
+  slack (MET)                                         0.47
+
+
+1

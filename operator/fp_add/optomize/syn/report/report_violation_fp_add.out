@@ -1,0 +1,20 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : fp_add
+Version: U-2022.12
+Date   : Mon Jun 30 19:48:49 2025
+****************************************
+
+
+   max_leakage_power
+
+                             Required        Actual
+   Design                   Leakage Power  Leakage Power     Slack
+   -----------------------------------------------------------------
+   fp_add                       0.00       2209682.75     -2209682.75
+                                                                    (VIOLATED)
+
+
+1
