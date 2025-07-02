@@ -66,30 +66,38 @@
 
 //=====================================================================================================================================================================================-//
 //
-//  In rounding block , first we normalize fraction and exponent ,and then round the fraction .
-// * Step 1.  first time normalize the exponent       
+//  First , in rounding block ,  we normalize the fraction position and exponent before rounding .
+// * Step 1.  first time normalization       
 //                               2bit  104bit
 //    106bit frac_i structure :  xx  . xxxxx
 //                                   ^
-//                                 float point
+//                               floating point
 //
-// * so if leading of frac_i = 1 , we normalize exp into exp_i + 1 
-// * others don't change.
+// * Then extension frac_i into 128bit width by zero to detect the leading one position (because the LOD logic we used is limit in width of 128、64) .
+// * If leading of frac_i = 1 , we normalize exp into exp_i + 1 , keep the frac = fraci 
+// *    else we shift left the frac_i to satisfy the following structure :
 //
-// 
-// * Step 2.  get LSB 、 guard_bit 、 round_bit from frac_i.
+//                                      1bit   105bit
+//        =>  106 bits frac structure :  x  .  xxxxxx
+//                                          ^
+//                                     floating point
+//
+// * Step 2.  get LSB 、 guard_bit 、 round_bit from frac.
 //
 //           53bit         1bit      1bit      ...
 //     |     FRAC     |   GURAD  |  Round  |  sticky  | 
 //
-// * Step 3.  rounding frac to nearest even (with sticky)
-//                              53bit
-//          frac_rounded  :  |  FRAC  |    
+// * Step 3.  rounding frac to nearest even  with sticky ( expand 1 bit for overflow )
+//                                1bit | 53bit fraction |
+//          frac_rounded  :         x     x . xxxxx    
+//                                          ^
+//                                     floating point 
 //
+//         ------------------------- pipeline stage ----------------------------------   
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//  Second in normaliztion block , we normalize the rounded result and exponent
+//  Second , in normaliztion block , we normalize the rounded result and exponent
 //
 // * Step 1. find leading one position of fraction(extense the frac into 64bit to fit LOD_width)
 //          
