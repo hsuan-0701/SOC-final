@@ -1,0 +1,154 @@
+ 
+****************************************
+check_design summary:
+Version:     U-2022.12
+Date:        Sun Jul  6 20:40:14 2025
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Cells                                                              59
+    Cells do not drive (LINT-1)                                     1
+    Connected to power or ground (LINT-32)                         52
+    Nets connected to multiple pins on same cell (LINT-33)          6
+
+Nets                                                               18
+    Unloaded nets (LINT-2)                                         18
+--------------------------------------------------------------------------------
+
+Warning: In design 'fmul_exp', cell 'B_0' does not drive any nets. (LINT-1)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_one[1][4]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_1/result[4]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_one[1][5]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_1/result[5]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_one[1][6]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_1/result[6]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_one[1][7]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_1/result[7]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_one[1][8]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_1/result[8]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_zero[1][4]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_0/result[4]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_zero[1][5]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_0/result[5]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_zero[1][6]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_0/result[6]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_zero[1][7]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_0/result[7]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_11_0/result_predict_zero[1][8]' driven by pin 'add_11_0/GEN_CLA8[1].CLA8_0/result[8]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_one[1][5]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_1/result[5]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_one[1][6]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_1/result[6]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_one[1][7]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_1/result[7]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_one[1][8]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_1/result[8]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_zero[1][5]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_0/result[5]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_zero[1][6]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_0/result[6]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_zero[1][7]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_0/result[7]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', net 'add_13_0/result_predict_zero[1][8]' driven by pin 'add_13_0/GEN_CLA8[1].CLA8_0/result[8]' has no loads. (LINT-2)
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_A[12]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[12]' is connected to logic 1. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[11]' is connected to logic 1. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[10]' is connected to logic 1. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[9]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[8]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[7]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[6]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[5]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[4]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[3]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[2]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[1]' is connected to logic 0. 
+Warning: In design 'fmul_exp', a pin on submodule 'add_13_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'in_B[0]' is connected to logic 1. 
+Warning: In design 'add_11_overflow', a pin on submodule 'CLA8_zero' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'Cin' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'Cin' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[7]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[6]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[5]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[4]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[3]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[7]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[6]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[5]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[4]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[3]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'Cin' is connected to logic 1. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[7]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[6]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[5]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[4]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[3]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[7]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[6]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[5]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[4]' is connected to logic 0. 
+Warning: In design 'add_11_overflow', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[3]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'CLA8_zero' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'Cin' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'Cin' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[7]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[6]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[5]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[7]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[6]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_0' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[5]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'Cin' is connected to logic 1. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[7]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[6]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'A[5]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[7]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[6]' is connected to logic 0. 
+Warning: In design 'add_13', a pin on submodule 'GEN_CLA8[1].CLA8_1' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'B[5]' is connected to logic 0. 
+Warning: In design 'fmul_exp', the same net is connected to more than one pin on submodule 'add_13_0'. (LINT-33)
+   Net '*Logic0*' is connected to pins 'in_A[12]', 'in_B[9]'', 'in_B[8]', 'in_B[7]', 'in_B[6]', 'in_B[5]', 'in_B[4]', 'in_B[3]', 'in_B[2]', 'in_B[1]'.
+Warning: In design 'fmul_exp', the same net is connected to more than one pin on submodule 'add_13_0'. (LINT-33)
+   Net '*Logic1*' is connected to pins 'in_B[12]', 'in_B[11]'', 'in_B[10]', 'in_B[0]'.
+Warning: In design 'add_11_overflow', the same net is connected to more than one pin on submodule 'GEN_CLA8[1].CLA8_0'. (LINT-33)
+   Net '*Logic0*' is connected to pins 'Cin', 'A[7]'', 'A[6]', 'A[5]', 'A[4]', 'A[3]', 'B[7]', 'B[6]', 'B[5]', 'B[4]', 'B[3]'.
+Warning: In design 'add_11_overflow', the same net is connected to more than one pin on submodule 'GEN_CLA8[1].CLA8_1'. (LINT-33)
+   Net '*Logic0*' is connected to pins 'A[7]', 'A[6]'', 'A[5]', 'A[4]', 'A[3]', 'B[7]', 'B[6]', 'B[5]', 'B[4]', 'B[3]'.
+Warning: In design 'add_13', the same net is connected to more than one pin on submodule 'GEN_CLA8[1].CLA8_0'. (LINT-33)
+   Net '*Logic0*' is connected to pins 'Cin', 'A[7]'', 'A[6]', 'A[5]', 'B[7]', 'B[6]', 'B[5]'.
+Warning: In design 'add_13', the same net is connected to more than one pin on submodule 'GEN_CLA8[1].CLA8_1'. (LINT-33)
+   Net '*Logic0*' is connected to pins 'A[7]', 'A[6]'', 'A[5]', 'B[7]', 'B[6]', 'B[5]'.
+1

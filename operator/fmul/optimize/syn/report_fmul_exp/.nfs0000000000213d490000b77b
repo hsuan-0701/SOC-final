@@ -1,0 +1,353 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : fmul_exp
+Version: U-2022.12
+Date   : Sun Jul  6 20:39:20 2025
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: pip1_exp_b_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip2_exp_reg[10]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip1_exp_b_reg[0]/CK (DFFSX1)            0.00       0.50 r
+  pip1_exp_b_reg[0]/Q (DFFSX1)             0.48       0.98 f
+  U292/Y (NOR2X1)                          0.13       1.12 r
+  U238/Y (INVXL)                           0.08       1.20 f
+  U306/Y (OAI21XL)                         0.30       1.50 r
+  U307/Y (AOI21X1)                         0.16       1.66 f
+  U308/Y (OAI21XL)                         0.30       1.96 r
+  U309/Y (AOI21X1)                         0.16       2.12 f
+  U310/Y (OAI21XL)                         0.30       2.42 r
+  U311/Y (AOI21X1)                         0.16       2.59 f
+  U312/Y (OAI21XL)                         0.28       2.86 r
+  U203/Y (AOI21XL)                         0.14       3.00 f
+  U331/Y (INVX1)                           0.10       3.11 r
+  U332/CO (ADDFX1)                         0.28       3.39 r
+  U333/S (ADDFX1)                          0.32       3.71 r
+  U196/Y (INVXL)                           0.05       3.76 f
+  pip2_exp_reg[10]/D (DFFSX1)              0.00       3.76 f
+  data arrival time                                   3.76
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  pip2_exp_reg[10]/CK (DFFSX1)             0.00       4.40 r
+  library setup time                      -0.26       4.14
+  data required time                                  4.14
+  -----------------------------------------------------------
+  data required time                                  4.14
+  data arrival time                                  -3.76
+  -----------------------------------------------------------
+  slack (MET)                                         0.38
+
+
+  Startpoint: pip1_exp_b_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip2_exp_reg[11]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip1_exp_b_reg[0]/CK (DFFSX1)            0.00       0.50 r
+  pip1_exp_b_reg[0]/Q (DFFSX1)             0.48       0.98 f
+  U292/Y (NOR2X1)                          0.13       1.12 r
+  U238/Y (INVXL)                           0.08       1.20 f
+  U306/Y (OAI21XL)                         0.30       1.50 r
+  U307/Y (AOI21X1)                         0.16       1.66 f
+  U308/Y (OAI21XL)                         0.30       1.96 r
+  U309/Y (AOI21X1)                         0.16       2.12 f
+  U310/Y (OAI21XL)                         0.30       2.42 r
+  U311/Y (AOI21X1)                         0.16       2.59 f
+  U312/Y (OAI21XL)                         0.28       2.86 r
+  U203/Y (AOI21XL)                         0.14       3.00 f
+  U331/Y (INVX1)                           0.10       3.11 r
+  U332/CO (ADDFX1)                         0.28       3.39 r
+  U333/CO (ADDFX1)                         0.27       3.66 r
+  U197/Y (INVXL)                           0.05       3.71 f
+  pip2_exp_reg[11]/D (DFFSX1)              0.00       3.71 f
+  data arrival time                                   3.71
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  pip2_exp_reg[11]/CK (DFFSX1)             0.00       4.40 r
+  library setup time                      -0.26       4.14
+  data required time                                  4.14
+  -----------------------------------------------------------
+  data required time                                  4.14
+  data arrival time                                  -3.71
+  -----------------------------------------------------------
+  slack (MET)                                         0.43
+
+
+  Startpoint: pip1_exp_b_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip2_exp_reg[9]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip1_exp_b_reg[0]/CK (DFFSX1)            0.00       0.50 r
+  pip1_exp_b_reg[0]/Q (DFFSX1)             0.48       0.98 f
+  U292/Y (NOR2X1)                          0.13       1.12 r
+  U238/Y (INVXL)                           0.08       1.20 f
+  U306/Y (OAI21XL)                         0.30       1.50 r
+  U307/Y (AOI21X1)                         0.16       1.66 f
+  U308/Y (OAI21XL)                         0.30       1.96 r
+  U309/Y (AOI21X1)                         0.16       2.12 f
+  U310/Y (OAI21XL)                         0.30       2.42 r
+  U311/Y (AOI21X1)                         0.16       2.59 f
+  U312/Y (OAI21XL)                         0.28       2.86 r
+  U203/Y (AOI21XL)                         0.14       3.00 f
+  U331/Y (INVX1)                           0.10       3.11 r
+  U332/S (ADDFX1)                          0.31       3.42 r
+  U198/Y (INVXL)                           0.05       3.46 f
+  pip2_exp_reg[9]/D (DFFSX1)               0.00       3.46 f
+  data arrival time                                   3.46
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  pip2_exp_reg[9]/CK (DFFSX1)              0.00       4.40 r
+  library setup time                      -0.26       4.14
+  data required time                                  4.14
+  -----------------------------------------------------------
+  data required time                                  4.14
+  data arrival time                                  -3.46
+  -----------------------------------------------------------
+  slack (MET)                                         0.68
+
+
+  Startpoint: pip3_sub_norm_reg[1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pip_exp_reg[4][12]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip3_sub_norm_reg[1]/CK (DFFSX1)         0.00       0.50 r
+  pip3_sub_norm_reg[1]/QN (DFFSX1)         0.43       0.93 r
+  U330/CO (ADDFX1)                         0.60       1.52 r
+  U313/Y (NAND3X1)                         0.12       1.64 f
+  U314/Y (INVX1)                           0.11       1.75 r
+  U315/Y (NAND2X1)                         0.08       1.84 f
+  U316/Y (INVX1)                           0.10       1.94 r
+  U317/Y (NAND2X1)                         0.08       2.02 f
+  U318/Y (INVX1)                           0.10       2.12 r
+  U319/Y (NAND2X1)                         0.08       2.20 f
+  U320/Y (INVX1)                           0.10       2.30 r
+  U321/Y (NAND2X1)                         0.08       2.39 f
+  U322/Y (INVX1)                           0.10       2.48 r
+  U323/Y (NAND2X1)                         0.08       2.57 f
+  U324/Y (INVX1)                           0.10       2.67 r
+  U325/Y (NAND2X1)                         0.08       2.75 f
+  U326/Y (INVX1)                           0.10       2.85 r
+  U327/Y (NAND2X1)                         0.08       2.93 f
+  U328/Y (INVX1)                           0.10       3.04 r
+  U329/Y (NAND2X1)                         0.07       3.11 f
+  U190/Y (XOR2XL)                          0.33       3.44 f
+  pip_exp_reg[4][12]/D (DFFSX1)            0.00       3.44 f
+  data arrival time                                   3.44
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  pip_exp_reg[4][12]/CK (DFFSX1)           0.00       4.40 r
+  library setup time                      -0.27       4.13
+  data required time                                  4.13
+  -----------------------------------------------------------
+  data required time                                  4.13
+  data arrival time                                  -3.44
+  -----------------------------------------------------------
+  slack (MET)                                         0.69
+
+
+  Startpoint: pip_exp_reg[7][5]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: exp_o[5] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip_exp_reg[7][5]/CK (DFFSX4)            0.00       0.50 r
+  pip_exp_reg[7][5]/QN (DFFSX4)            1.95       2.45 r
+  exp_o[5] (out)                           0.00       2.45 r
+  data arrival time                                   2.45
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  output external delay                   -1.00       3.40
+  data required time                                  3.40
+  -----------------------------------------------------------
+  data required time                                  3.40
+  data arrival time                                  -2.45
+  -----------------------------------------------------------
+  slack (MET)                                         0.95
+
+
+  Startpoint: pip_exp_reg[7][4]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: exp_o[4] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip_exp_reg[7][4]/CK (DFFSX4)            0.00       0.50 r
+  pip_exp_reg[7][4]/QN (DFFSX4)            1.95       2.45 r
+  exp_o[4] (out)                           0.00       2.45 r
+  data arrival time                                   2.45
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  output external delay                   -1.00       3.40
+  data required time                                  3.40
+  -----------------------------------------------------------
+  data required time                                  3.40
+  data arrival time                                  -2.45
+  -----------------------------------------------------------
+  slack (MET)                                         0.95
+
+
+  Startpoint: pip_exp_reg[7][3]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: exp_o[3] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip_exp_reg[7][3]/CK (DFFSX4)            0.00       0.50 r
+  pip_exp_reg[7][3]/QN (DFFSX4)            1.95       2.45 r
+  exp_o[3] (out)                           0.00       2.45 r
+  data arrival time                                   2.45
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  output external delay                   -1.00       3.40
+  data required time                                  3.40
+  -----------------------------------------------------------
+  data required time                                  3.40
+  data arrival time                                  -2.45
+  -----------------------------------------------------------
+  slack (MET)                                         0.95
+
+
+  Startpoint: pip_exp_reg[7][2]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: exp_o[2] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip_exp_reg[7][2]/CK (DFFSX4)            0.00       0.50 r
+  pip_exp_reg[7][2]/QN (DFFSX4)            1.95       2.45 r
+  exp_o[2] (out)                           0.00       2.45 r
+  data arrival time                                   2.45
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  output external delay                   -1.00       3.40
+  data required time                                  3.40
+  -----------------------------------------------------------
+  data required time                                  3.40
+  data arrival time                                  -2.45
+  -----------------------------------------------------------
+  slack (MET)                                         0.95
+
+
+  Startpoint: pip_exp_reg[7][1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: exp_o[1] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip_exp_reg[7][1]/CK (DFFSX4)            0.00       0.50 r
+  pip_exp_reg[7][1]/QN (DFFSX4)            1.95       2.45 r
+  exp_o[1] (out)                           0.00       2.45 r
+  data arrival time                                   2.45
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  output external delay                   -1.00       3.40
+  data required time                                  3.40
+  -----------------------------------------------------------
+  data required time                                  3.40
+  data arrival time                                  -2.45
+  -----------------------------------------------------------
+  slack (MET)                                         0.95
+
+
+  Startpoint: pip_exp_reg[7][0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: exp_o[0] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  pip_exp_reg[7][0]/CK (DFFSX4)            0.00       0.50 r
+  pip_exp_reg[7][0]/QN (DFFSX4)            1.95       2.45 r
+  exp_o[0] (out)                           0.00       2.45 r
+  data arrival time                                   2.45
+
+  clock clk (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.50       4.50
+  clock uncertainty                       -0.10       4.40
+  output external delay                   -1.00       3.40
+  data required time                                  3.40
+  -----------------------------------------------------------
+  data required time                                  3.40
+  data arrival time                                  -2.45
+  -----------------------------------------------------------
+  slack (MET)                                         0.95
+
+
+1

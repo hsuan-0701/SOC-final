@@ -1,0 +1,43 @@
+ 
+****************************************
+Report : area
+Design : fmul_exp
+Version: U-2022.12
+Date   : Sun Jul  6 20:38:14 2025
+****************************************
+
+Library(s) Used:
+
+    slow (File: /home/raid7_2/user13/r3921070/exp_v0/syn/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db)
+
+Number of ports:                           40
+Number of nets:                           295
+Number of cells:                          256
+Number of combinational cells:            140
+Number of sequential cells:               116
+Number of macros/black boxes:               0
+Number of buf/inv:                         64
+Number of references:                      22
+
+Combinational area:               2122.243228
+Buf/Inv area:                      502.286405
+Noncombinational area:            7570.886292
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                  9693.129519
+Total area:                 undefined
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area          Local cell area
+                                  ------------------  ---------------------------- 
+Hierarchical cell                 Absolute   Percent  Combi-     Noncombi-  Black-
+                                  Total      Total    national   national   boxes   Design
+--------------------------------  ---------  -------  ---------  ---------  ------  ---------
+fmul_exp                          9693.1295    100.0  2122.2432  7570.8863  0.0000  fmul_exp
+--------------------------------  ---------  -------  ---------  ---------  ------  ---------
+Total                                                 2122.2432  7570.8863  0.0000
+
+1
