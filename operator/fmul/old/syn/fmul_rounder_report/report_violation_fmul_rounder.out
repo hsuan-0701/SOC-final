@@ -1,0 +1,20 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : fmul_rounder
+Version: U-2022.12
+Date   : Tue Jul  1 15:45:07 2025
+****************************************
+
+
+   max_leakage_power
+
+                             Required        Actual
+   Design                   Leakage Power  Leakage Power     Slack
+   -----------------------------------------------------------------
+   fmul_rounder                 0.00       1650721.75     -1650721.75
+                                                                    (VIOLATED)
+
+
+1

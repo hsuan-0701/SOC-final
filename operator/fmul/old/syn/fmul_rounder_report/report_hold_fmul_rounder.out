@@ -1,0 +1,162 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay min
+        -max_paths 5
+Design : fmul_rounder
+Version: U-2022.12
+Date   : Tue Jul  1 15:45:07 2025
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: stage_1_v_reg
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: stage_2_v_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  stage_1_v_reg/CK (DFFSX1)                0.00       0.50 r
+  stage_1_v_reg/Q (DFFSX1)                 0.48       0.98 f
+  stage_2_v_reg/D (DFFSX4)                 0.00       0.98 f
+  data arrival time                                   0.98
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  stage_2_v_reg/CK (DFFSX4)                0.00       0.60 r
+  library hold time                       -0.08       0.52
+  data required time                                  0.52
+  -----------------------------------------------------------
+  data required time                                  0.52
+  data arrival time                                  -0.98
+  -----------------------------------------------------------
+  slack (MET)                                         0.45
+
+
+  Startpoint: stage_0_v_reg
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: stage_1_v_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  stage_0_v_reg/CK (DFFSX1)                0.00       0.50 r
+  stage_0_v_reg/Q (DFFSX1)                 0.47       0.97 f
+  stage_1_v_reg/D (DFFSX1)                 0.00       0.97 f
+  data arrival time                                   0.97
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  stage_1_v_reg/CK (DFFSX1)                0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -0.97
+  -----------------------------------------------------------
+  slack (MET)                                         0.47
+
+
+  Startpoint: stage_0_inf_reg
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: stage_1_inf_reg
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  stage_0_inf_reg/CK (DFFSX1)              0.00       0.50 r
+  stage_0_inf_reg/Q (DFFSX1)               0.47       0.97 f
+  stage_1_inf_reg/D (DFFSX1)               0.00       0.97 f
+  data arrival time                                   0.97
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  stage_1_inf_reg/CK (DFFSX1)              0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -0.97
+  -----------------------------------------------------------
+  slack (MET)                                         0.47
+
+
+  Startpoint: frac_stage_1_reg[51]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: frac_stage_2_reg[51]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  frac_stage_1_reg[51]/CK (DFFSX1)         0.00       0.50 r
+  frac_stage_1_reg[51]/QN (DFFSX1)         0.43       0.93 r
+  U4279/Y (AOI22XL)                        0.08       1.01 f
+  frac_stage_2_reg[51]/D (DFFSX1)          0.00       1.01 f
+  data arrival time                                   1.01
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  frac_stage_2_reg[51]/CK (DFFSX1)         0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -1.01
+  -----------------------------------------------------------
+  slack (MET)                                         0.51
+
+
+  Startpoint: frac_stage_1_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: frac_stage_2_reg[0]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: min
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  frac_stage_1_reg[0]/CK (DFFSX1)          0.00       0.50 r
+  frac_stage_1_reg[0]/QN (DFFSX1)          0.40       0.90 r
+  U4116/Y (OAI211XL)                       0.11       1.01 f
+  frac_stage_2_reg[0]/D (DFFSX1)           0.00       1.01 f
+  data arrival time                                   1.01
+
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  clock uncertainty                        0.10       0.60
+  frac_stage_2_reg[0]/CK (DFFSX1)          0.00       0.60 r
+  library hold time                       -0.10       0.50
+  data required time                                  0.50
+  -----------------------------------------------------------
+  data required time                                  0.50
+  data arrival time                                  -1.01
+  -----------------------------------------------------------
+  slack (MET)                                         0.51
+
+
+1
