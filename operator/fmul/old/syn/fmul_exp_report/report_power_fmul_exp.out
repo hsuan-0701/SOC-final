@@ -1,0 +1,35 @@
+ 
+****************************************
+Report : power
+        -hier
+        -analysis_effort low
+Design : fmul_exp
+Version: U-2022.12
+Date   : Thu Jun 19 17:13:47 2025
+****************************************
+
+
+Library(s) Used:
+
+    slow (File: /home/raid7_2/user13/r3921070/exp_v0/syn/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db)
+
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.62 
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1pW
+
+
+--------------------------------------------------------------------------------
+                                       Switch   Int      Leak     Total
+Hierarchy                              Power    Power    Power    Power    %
+--------------------------------------------------------------------------------
+fmul_exp                                  0.195    0.645 2.96e+05    0.840 100.0
+1
