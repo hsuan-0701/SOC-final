@@ -1,0 +1,43 @@
+ 
+****************************************
+Report : area
+Design : fmul_rounder
+Version: U-2022.12
+Date   : Sun Jul  6 20:32:19 2025
+****************************************
+
+Library(s) Used:
+
+    slow (File: /home/raid7_2/user13/r3921070/rounder_v0/syn/CBDK_TSMC018_Arm_f1.0/CIC/SynopsysDC/db/slow.db)
+
+Number of ports:                          187
+Number of nets:                          1915
+Number of cells:                         1756
+Number of combinational cells:           1489
+Number of sequential cells:               267
+Number of macros/black boxes:               0
+Number of buf/inv:                        194
+Number of references:                      77
+
+Combinational area:              22453.200145
+Buf/Inv area:                     1786.276814
+Noncombinational area:           17623.266945
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                 40076.467090
+Total area:                 undefined
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area            Local cell area
+                                  -------------------  ------------------------------ 
+Hierarchical cell                 Absolute    Percent  Combi-      Noncombi-   Black-
+                                  Total       Total    national    national    boxes   Design
+--------------------------------  ----------  -------  ----------  ----------  ------  ---------
+fmul_rounder                      40076.4671    100.0  22453.2001  17623.2669  0.0000  fmul_rounder
+--------------------------------  ----------  -------  ----------  ----------  ------  ---------
+Total                                                  22453.2001  17623.2669  0.0000
+
+1

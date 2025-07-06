@@ -1,0 +1,640 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 10
+Design : fmul_rounder
+Version: U-2022.12
+Date   : Tue Jul  1 16:14:52 2025
+****************************************
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[33]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4878/Y (NOR3X4)                         0.23       3.51 r
+  U5415/Y (NAND2X4)                        0.09       3.61 f
+  U3017/Y (INVX8)                          0.09       3.69 r
+  U3018/Y (INVX8)                          0.05       3.74 f
+  U5414/Y (CLKINVX8)                       0.07       3.81 r
+  U4076/Y (BUFX20)                         0.14       3.95 r
+  U2923/Y (AOI22X4)                        0.11       4.06 f
+  U2894/Y (NAND3X4)                        0.13       4.19 r
+  U4064/Y (NAND3X2)                        0.09       4.28 f
+  U4911/Y (AOI2BB2X4)                      0.23       4.51 f
+  U2868/Y (NAND3X2)                        0.09       4.60 r
+  U2886/Y (NAND2X2)                        0.08       4.69 f
+  U4901/Y (INVX4)                          0.07       4.76 r
+  U5286/Y (NAND3X4)                        0.08       4.84 f
+  U5285/Y (INVX4)                          0.08       4.91 r
+  U5453/Y (NAND3X4)                        0.11       5.02 f
+  U4894/Y (NOR2X4)                         0.14       5.16 r
+  U4622/Y (BUFX8)                          0.15       5.31 r
+  U4801/Y (NAND4X1)                        0.11       5.42 f
+  U6946/Y (XOR2X1)                         0.26       5.67 r
+  U4556/Y (MXI2X1)                         0.09       5.76 f
+  frac_stage_0_reg[33]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[33]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[34]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4878/Y (NOR3X4)                         0.23       3.51 r
+  U5415/Y (NAND2X4)                        0.09       3.61 f
+  U3017/Y (INVX8)                          0.09       3.69 r
+  U3018/Y (INVX8)                          0.05       3.74 f
+  U5414/Y (CLKINVX8)                       0.07       3.81 r
+  U4076/Y (BUFX20)                         0.14       3.95 r
+  U2923/Y (AOI22X4)                        0.11       4.06 f
+  U2894/Y (NAND3X4)                        0.13       4.19 r
+  U4064/Y (NAND3X2)                        0.09       4.28 f
+  U4911/Y (AOI2BB2X4)                      0.23       4.51 f
+  U2868/Y (NAND3X2)                        0.09       4.60 r
+  U2886/Y (NAND2X2)                        0.08       4.69 f
+  U4901/Y (INVX4)                          0.07       4.76 r
+  U5286/Y (NAND3X4)                        0.08       4.84 f
+  U5285/Y (INVX4)                          0.08       4.91 r
+  U5453/Y (NAND3X4)                        0.11       5.02 f
+  U4894/Y (NOR2X4)                         0.14       5.16 r
+  U4621/Y (NAND2X1)                        0.14       5.30 f
+  U5191/Y (NOR2X2)                         0.14       5.44 r
+  U4112/Y (XNOR2X2)                        0.20       5.64 f
+  U2908/Y (CLKINVX3)                       0.04       5.68 r
+  U5422/Y (MXI2X1)                         0.08       5.76 f
+  frac_stage_0_reg[34]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[34]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[28]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6908/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[28]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[28]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[17]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6979/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[17]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[17]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[15]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6987/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[15]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[15]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[14]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U4994/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[14]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[14]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[11]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6804/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[11]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[11]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[10]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6879/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[10]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[10]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[9]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6717/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[9]/D (DFFSX1)           0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[9]/CK (DFFSX1)          0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+  Startpoint: frac_i[48] (input port clocked by clk)
+  Endpoint: frac_stage_0_reg[30]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.50       0.50
+  input external delay                     1.00       1.50 f
+  frac_i[48] (in)                          0.02       1.52 f
+  U5508/Y (NOR3X4)                         0.21       1.73 r
+  U5105/Y (NAND4X4)                        0.14       1.86 f
+  U5363/Y (NOR2X4)                         0.15       2.01 r
+  U5366/Y (NAND2X4)                        0.14       2.15 f
+  U5466/Y (INVX8)                          0.13       2.28 r
+  U4736/Y (NAND3BX4)                       0.09       2.37 f
+  U5546/Y (NAND3X2)                        0.11       2.47 r
+  U5103/Y (INVX4)                          0.06       2.53 f
+  U4948/Y (NAND2X4)                        0.08       2.60 r
+  U4989/Y (NOR2X4)                         0.08       2.68 f
+  U4848/Y (BUFX4)                          0.14       2.83 f
+  U5609/Y (NAND4X2)                        0.13       2.95 r
+  U5169/Y (NAND4X2)                        0.14       3.09 f
+  U5168/Y (NOR2X4)                         0.12       3.21 r
+  U4879/Y (NOR2X4)                         0.07       3.28 f
+  U4147/Y (NAND2BX4)                       0.17       3.45 f
+  U5444/Y (NAND2X4)                        0.17       3.62 r
+  U5443/Y (INVX8)                          0.10       3.73 f
+  U5617/Y (INVX8)                          0.13       3.86 r
+  U5218/Y (OAI2BB2X4)                      0.12       3.97 f
+  U2770/Y (CLKINVX4)                       0.07       4.04 r
+  U4101/Y (NAND2X4)                        0.08       4.12 f
+  U4809/Y (AOI22X2)                        0.25       4.37 r
+  U5676/Y (NAND2XL)                        0.08       4.45 f
+  U5025/Y (AOI2BB2X1)                      0.31       4.76 f
+  U4699/Y (NAND3X2)                        0.13       4.88 r
+  U5354/Y (NOR2X2)                         0.06       4.94 f
+  U2832/Y (NAND3X2)                        0.11       5.05 r
+  U2831/Y (CLKINVX3)                       0.08       5.13 f
+  U2703/Y (NAND4X2)                        0.14       5.28 r
+  U4655/Y (NAND2X2)                        0.09       5.37 f
+  U5159/Y (INVX4)                          0.12       5.49 r
+  U4877/Y (CLKINVX8)                       0.11       5.60 f
+  U6951/Y (MXI2X1)                         0.16       5.76 f
+  frac_stage_0_reg[30]/D (DFFSX1)          0.00       5.76 f
+  data arrival time                                   5.76
+
+  clock clk (rise edge)                    5.00       5.00
+  clock network delay (ideal)              0.50       5.50
+  clock uncertainty                       -0.10       5.40
+  frac_stage_0_reg[30]/CK (DFFSX1)         0.00       5.40 r
+  library setup time                      -0.27       5.13
+  data required time                                  5.13
+  -----------------------------------------------------------
+  data required time                                  5.13
+  data arrival time                                  -5.76
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.63
+
+
+1
