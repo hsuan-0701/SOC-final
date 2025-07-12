@@ -163,16 +163,15 @@ def fp64_mul(ma, mb, ea, eb, sa, sb):
         result_s = 1
         
     mul_e = ea + eb 
-    mul_e = mul_e + 1 # folllow hardware's rounder
-    result_m, result_e = normalize_fmul1(result_m, mul_e , position_move=53)
-    result_m = round_to_nearest_even_with_sticky(result_m , lsb_position=53)
+    result_m, result_e , lsb_posi = overflow_detect(result_m, mul_e , position_move=52) 
+    result_m  = round_to_nearest_even_with_sticky(result_m , lsb_position=lsb_posi)
     # after first time rounding , the floating point locate between bit[52:51]
     if result_m != 0 :
         result_m_final , result_e_final = normalize_fmul1(result_m , result_e , position_move = 0 )
     else :
         result_m_final = 0
         result_e_final = -5000
-    # denormal (infinite num 、 zero num)
+    # subnormal (infinite num 、 zero num)
     exp_less = 0
     if result_e_final < -1022 :
         exp_less = -1022 - result_e_final
