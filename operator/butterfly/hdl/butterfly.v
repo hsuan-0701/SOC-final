@@ -6,20 +6,19 @@
 // .... Content of the license
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ============================================================================================================================================================================
-// Module Name : butterfly
-// Author : Jeese , hsuanjung,Lo
+// Module Name : fmul_exp
+// Author : Jeese
 // Create Date: 6/2025
 // Features & Functions:
-// .  
-// . 
+// . Butterfly process element
+// .
 // ============================================================================================================================================================================
 // Revision History:
-// Date           by            Version       Change Description
+// Date          by         Version       Change Description
+// 2025.7.23    hsuanjung      x          change ifft's operation to follow falcon ifft
 // 
 //
-// 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 module butterfly
 #(  
@@ -27,9 +26,9 @@ module butterfly
 )
 (
     input   wire clk,
-    input   wire rstn,
+    input   wire rst_n,
 
-    input   wire [1:0] mode, // FFT/iFFT/NTT/iNTT
+    input   wire [1:0] mode, // /iNTT(11)/NTT(10)/iFFT(01)/FFT(00)
 
     input   wire i_vld,
     output  wire i_rdy,
@@ -37,434 +36,456 @@ module butterfly
     output  wire o_vld,
     input   wire o_rdy,
 
-    input   wire [(pDATA_WIDTH-1):0] ai,
-    input   wire [(pDATA_WIDTH-1):0] bi,
-    input   wire [(pDATA_WIDTH-1):0] gm, // constant
-    
+    input   wire [(pDATA_WIDTH-1):0] ai, // are(64bit)+aim(64bit)
+    input   wire [(pDATA_WIDTH-1):0] bi, // bre(64bit)+bim(64bit)
+    input   wire [(pDATA_WIDTH-1):0] gm, // gre(64bit)+gim(64bit)
     output  wire [(pDATA_WIDTH-1):0] ao,
     output  wire [(pDATA_WIDTH-1):0] bo
 
 );
-localparam pFP_WIDTH        = 64 ;
-localparam pMANTISSA_WIDTH  = 52 ;
-localparam pEXP_WIDTH       = 11 ;
+//==================================================================================//
 
-localparam pNTT_WIDTH       = 16 ;
-localparam pWALLACE_WIDTH   = 131;
-//--------------------------------------------------------------------------------------------------------------------//
-localparam pROUNDER_FRAC_WIDTH = 106 ;
-localparam pROUNDER_EXP_WIDTH  = 13  ;
-//--------------------------------------------------------------------------------------------------------------------//
-localparam TOTAL_LATENCY       = 22;  //* Latency of mode , to alignment the operator process with 19cycle we set mode latency.
-localparam FP_ADD_LATENCY      = 5 ;  //* Latency of fp_add
-localparam MUL16_ARRAY_LATENCY = 4 ;  //* Latency of mul_16 array
-localparam WALLACE_LATENCY     = 3 ;  //* Latency of wallace tree
-localparam EXP_OP_LATENCY      = 7 ;
-localparam ROUNDER_LATENCY     = 3 ;  //* Latency of rounder
-//--------------------------------------------------------------------------------------------------------------------//
-localparam FFT      = 2'b11 ;
-localparam IFFT     = 2'b10 ;
-localparam INTT     = 2'b00 ;
-localparam NTT      = 2'b01 ;
-//=====================================================================================================================//
-//--------------------------------------- INPUT INTERFACE  ------------------------------------------------------------//
-reg                                 pip0_valid;
-reg  [1:0]                          pip0_mode ;
-reg  [(pDATA_WIDTH-1):0]            pip0_ai   ;
-reg  [(pDATA_WIDTH-1):0]            pip0_bi   ;
-reg  [(pDATA_WIDTH-1):0]            pip0_gm   ;
-//-------------------------------------- DECODE (FFT fp data ) --------------------------------------------------------//
-wire [(pFP_WIDTH-1) :0]             pip0_a_re ;
-wire [(pFP_WIDTH-1) :0]             pip0_a_im ;
-wire [(pFP_WIDTH-1) :0]             pip0_b_re ;
-wire [(pFP_WIDTH-1) :0]             pip0_b_im ;
-wire                                Cmul_valid ;
-//---------------------------------------- fp_add(first) operand -------------------------------------------------------//
-// * input of fp_add
-wire [(pFP_WIDTH-1) : 0]            a_re     ;
-wire [(pFP_WIDTH-1) : 0]            a_im     ;
-wire [(pFP_WIDTH-1) : 0]            b_re     ;
-wire [(pFP_WIDTH-1) : 0]            b_im     ;
-wire [(pFP_WIDTH-1) : 0]            a_im_neg ;
-wire [(pFP_WIDTH-1) : 0]            b_im_neg ;
-// * result of fp_add
-wire [(pFP_WIDTH-1) : 0]            ar_sub_ai    ;
-wire [(pFP_WIDTH-1) : 0]            br_add_bi    ;
-wire [(pFP_WIDTH-1) : 0]            br_sub_bi    ;
-wire [2             : 0]            fp_add_ready ;
-// * other operand (store in shift reg)
-reg  [(pDATA_WIDTH-1): 0]           a_reg     [0:(FP_ADD_LATENCY-1)];
-reg  [(pDATA_WIDTH-1): 0]           b_reg     [0:(FP_ADD_LATENCY-1)];
-reg  [2              : 0]           mode_reg  [0:(FP_ADD_LATENCY-1)];
-wire [(pFP_WIDTH-1)  : 0]           a_re_reg;
-wire [(pFP_WIDTH-1)  : 0]           a_im_reg;
-wire [(pFP_WIDTH-1)  : 0]           b_re_reg;
-wire [(pFP_WIDTH-1)  : 0]           b_im_reg;
-//---------------------------------------- fmul_exp  ---------------------------------------------------------------------//
-wire [(pEXP_WIDTH-1):0]             exp_A0;
-wire [(pEXP_WIDTH-1):0]             exp_A1;
-wire [(pEXP_WIDTH-1):0]             exp_B0;
-wire [(pEXP_WIDTH-1):0]             exp_B1;
-wire [(pEXP_WIDTH-1):0]             exp_C0;
-wire [(pEXP_WIDTH-1):0]             exp_C1;
-// * exp operator output
-wire [(pROUNDER_EXP_WIDTH-1):0]     exp_A_out;
-wire [(pROUNDER_EXP_WIDTH-1):0]     exp_B_out;
-wire [(pROUNDER_EXP_WIDTH-1):0]     exp_C_out;
-wire                                inf_A ;
-wire                                inf_B ;
-wire                                inf_C ;
-wire                                exp_ready_A;
-wire                                exp_ready_B;
-wire                                exp_ready_C;
-// * sign bit of fp operand
-wire                                sign_A ;
-wire                                sign_B ;
-wire                                sign_C ;
-reg                                 sign_A_reg[0 :(EXP_OP_LATENCY-1)];
-reg                                 sign_B_reg[0 :(EXP_OP_LATENCY-1)];
-reg                                 sign_C_reg[0 :(EXP_OP_LATENCY-1)];
-//---------------------------------------- mul_16 array (sharing) ---------------------------------------------------------//
-wire                                array_in_valid   ;
-wire[2:0]                           array_out_valid  ;
-// * hidden bit of fp_mul operand
-wire                                hidden_br_add_bi ;
-wire                                hidden_a_im      ;
-wire                                hidden_ar_sub_ai ;
-wire                                hidden_b_im ;
-wire                                hidden_br_sub_bi ;
-wire                                hidden_a_re      ;
-// * mul_16 array input data ( A、 B 、 C array)
-wire [(pFP_WIDTH-1)  : 0]           array_in_A0      ;
-wire [(pFP_WIDTH-1)  : 0]           array_in_A1      ;
-wire [(pFP_WIDTH-1)  : 0]           array_in_B0      ;
-wire [(pFP_WIDTH-1)  : 0]           array_in_B1      ;
-wire [(pFP_WIDTH-1)  : 0]           array_in_C0      ;
-wire [(pFP_WIDTH-1)  : 0]           array_in_C1      ;
-// * mul_16 array output result (A、 B 、 C array)
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_a0[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_a1[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_a2[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_a3[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_b0[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_b1[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_b2[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_b3[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_c0[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_c1[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_c2[0:3];
-wire [(pNTT_WIDTH*2-1):0]           mul_16_result_c3[0:3];
-//--------------------------------------------- Wallace tree ------------------------------------------------------------//
-wire                                wallace_mode;
-wire [2:0]                          wallace_out_valid;
-wire [(pWALLACE_WIDTH-1):0]         wallace_in;
-// * wallace tree output result(A 、 B 、 C tree)
-wire [(pWALLACE_WIDTH-1):0]         wallace_out_A;
-wire [(pWALLACE_WIDTH-1):0]         wallace_out_B;
-wire [(pWALLACE_WIDTH-1):0]         wallace_out_C;
-//--------------------------------------- fraction rounder --------------------------------------------------------------//
-wire [(pROUNDER_FRAC_WIDTH-1):0]    frac_A_i;
-wire [(pROUNDER_FRAC_WIDTH-1):0]    frac_B_i;
-wire [(pROUNDER_FRAC_WIDTH-1):0]    frac_C_i;
-wire [(pMANTISSA_WIDTH-1):0]        frac_A_rounded;
-wire [(pMANTISSA_WIDTH-1):0]        frac_B_rounded;
-wire [(pMANTISSA_WIDTH-1):0]        frac_C_rounded;
-wire [(pEXP_WIDTH-1):0]             exp_A_rounded;
-wire [(pEXP_WIDTH-1):0]             exp_B_rounded;
-wire [(pEXP_WIDTH-1):0]             exp_C_rounded;
-wire                                rounder_ready_A;
-wire                                rounder_ready_B;
-wire                                rounder_ready_C;
-//-------------------------------------- fp_add 2 (complex mul result) -------------------------------------------------//
-wire [(pFP_WIDTH-1):0]              FP_num_A;
-wire [(pFP_WIDTH-1):0]              FP_num_B;
-wire [(pFP_WIDTH-1):0]              FP_num_c;
-wire [(pFP_WIDTH-1):0]              y_re;
-wire [(pFP_WIDTH-1):0]              y_im;
-wire                                cmul_im_ready;
-wire                                cmul_re_ready;
+localparam NTT_MUL_LATENCY = 17;
+localparam FFT_MUL_LATENCY = 21;
+localparam FP_ADD_LATENCY  = 5 ;
 
-//======================================================================================================================//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                          INPUT INTERFACE                                                 //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+localparam NTT_LATENCY     = 22;
+localparam iNTT_LATENCY    = 22;//?
+localparam FFT_LATENCY     = 28;
+localparam iFFT_LATENCY    = 28;//?
+
+localparam mode_FFT        = 2'b00;
+localparam mode_iFFT       = 2'b01;
+localparam mode_NTT        = 2'b10;
+localparam mode_iNTT       = 2'b11;
+
+
+localparam FFT_WAIT  = 3'b000;
+localparam iFFT_WAIT = 3'b001;
+localparam NTT_WAIT  = 3'b010;
+localparam iNTT_WAIT = 3'b011;
+localparam READY     = 3'b111;
+//==================================================================================//
+localparam pFP_WIDTH       = 64 ;
+localparam pNTT_WTDTH      = 16 ;
+localparam pEXP_WIDTH      = 11 ;
+localparam pFRAC_WIDTH     = 52 ;
+//==================================================================================//
+localparam pEXP_DENOR      = 11'b000_0000_0000;
+localparam pEXP_INF        = 11'b111_1111_1111;
+//==================================================================================//
+//-------------------- Input interface and mode control ----------------------------//
+reg  [2:0]                  state;
+reg  [2:0]                  state_next;
+reg  [1:0]                  mode_state ; //control datapath
+reg  [1:0]                  mode_state_next;
+
+reg                         buf_en;
+reg  [(pDATA_WIDTH-1):0]    buf_ai;
+reg  [(pDATA_WIDTH-1):0]    buf_bi;
+reg  [(pDATA_WIDTH-1):0]    buf_gm;
+reg                         buf_i_vld;
+reg                         i_vld_en;
+reg                         trans_en;
+reg  [4:0]                  count;
+//----------------------------- MUL & ADD FIFO ------------------------------------//
+reg  [(pDATA_WIDTH-1):0]    MUL_FIFO[0:(FFT_MUL_LATENCY-1)];
+reg  [(pDATA_WIDTH-1):0]    ADD_FIFO[0:(FP_ADD_LATENCY-1)] ;
+//-------------------------- Multiplier operand & result  -------------------------//
+wire [(pDATA_WIDTH-1):0]    a_result;
+wire [(pFP_WIDTH*2-1):0]    mul_in1 ;
+wire [(pFP_WIDTH*2-1):0]    mul_in2 ;
+wire                        mul_in_valid ;
+wire [(pDATA_WIDTH-1):0]    mul_result_int;
+wire [(pDATA_WIDTH-1):0]    mul_result_com;
+wire [(pDATA_WIDTH-1):0]    mul_result;
+wire [(pFP_WIDTH-1):0]      mul_result_re_inv;
+wire [(pFP_WIDTH-1):0]      mul_result_im_inv;
+wire [(pDATA_WIDTH-1):0]    mul_result_inv;
+wire                        mul_out_valid[0:1];
+wire                        cmul_valid_i[0:1];
+wire                        cmul_valid_o[0:3];
+wire                        mont_add_valid_o0[0:7];
+wire                        mont_add_valid_o1[0:7];
+wire [(pDATA_WIDTH-1):0]    mont_add_result;
+wire [(pDATA_WIDTH-1):0]    mont_sub_result;
+reg  [(pNTT_WTDTH-1):0]     mont_add_intt[0:7];
+reg  [(pNTT_WTDTH-1):0]     mont_sub_intt[0:7];
+wire [(pDATA_WIDTH-1):0]    mont_add_intt_result;
+wire [(pDATA_WIDTH-1):0]    mont_sub_intt_result;
+//----------------------------- fp_add operand -------------------------------------//
+wire [(pFP_WIDTH-1):0]      fp_add_in_01[0:1] ;
+wire [(pFP_WIDTH-1):0]      fp_add_in_02[0:1] ;
+wire [(pFP_WIDTH-1):0]      fp_add_in_11[0:1] ;
+wire [(pFP_WIDTH-1):0]      fp_add_in_12[0:1] ;
+wire                        fp_add_in_valid   ;
+wire [3:0]                  fp_add_out_valid  ;
+wire [(pFP_WIDTH*2-1):0]    fp_add_result[0:1];
+//------------------------------ ifft result ---------------------------------------//
+wire [(pEXP_WIDTH-1):0]     IFFT_result_exp_im [0:1] ;
+wire [(pEXP_WIDTH-1):0]     IFFT_result_exp_re [0:1] ;
+wire [(pFRAC_WIDTH-1):0]    IFFT_result_frac_im[0:1] ;
+wire [(pFRAC_WIDTH-1):0]    IFFT_result_frac_re[0:1] ;
+wire [(pDATA_WIDTH-1):0]    cmul_result_ifft   [0:1] ;
+//----------------------------- output buffer --------------------------------------//
+reg  [(pDATA_WIDTH-1):0]    ao_buf   [0:1];
+reg  [(pDATA_WIDTH-1):0]    bo_buf   [0:1];
+reg                         o_vld_buf[0:1];
+
+//==================================================================================//
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                       Input interface and mode control                                                                              //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// state control
+// i_rdy controller
+always @(*) begin
+    if (i_vld && (mode_state != mode)) begin
+        case (state)
+        READY: begin
+            trans_en = 1'b0;
+            if (mode_state == mode_FFT) begin
+                state_next = FFT_WAIT;
+                buf_en     = 1'b1;
+                i_vld_en   = 1'b0;
+            end else if (mode_state == mode_iFFT) begin
+                state_next = iFFT_WAIT;
+                buf_en     = 1'b1;
+                i_vld_en   = 1'b0;
+            end else if (mode_state == mode_NTT) begin
+                state_next = NTT_WAIT;
+                buf_en     = 1'b1;
+                i_vld_en   = 1'b0;
+            end else if (mode_state == mode_iNTT) begin
+                state_next = iNTT_WAIT;
+                buf_en     = 1'b1;
+                i_vld_en   = 1'b0;
+            end else begin
+                state_next = READY;
+                buf_en     = 1'b0;
+                i_vld_en   = 1'b1;
+            end
+        end
+        FFT_WAIT: begin
+          buf_en   = 1'b0;
+          i_vld_en = 1'b0;
+          if (count == FFT_LATENCY - 1) begin
+            state_next = READY;
+            trans_en   = 1'b1;
+          end else begin
+            state_next = state;
+            trans_en   = 1'b0;
+          end
+        end
+        iFFT_WAIT: begin
+          buf_en   = 1'b0;
+          i_vld_en = 1'b0;
+          if (count == iFFT_LATENCY - 1) begin
+            state_next = READY;
+            trans_en   = 1'b1;
+          end else begin
+            state_next = state;
+            trans_en   = 1'b0;
+          end
+        end
+        NTT_WAIT: begin
+          buf_en   = 1'b0;
+          i_vld_en = 1'b0;
+          if (count == NTT_LATENCY - 1) begin
+            state_next = READY;
+            trans_en   = 1'b1;
+          end else begin
+            state_next = state;
+            trans_en   = 1'b0;
+          end
+        end
+        iNTT_WAIT: begin
+          buf_en   = 1'b0;
+          i_vld_en = 1'b0;
+          if (count == iNTT_LATENCY - 1) begin
+            state_next = READY;
+            trans_en   = 1'b1;
+          end else begin
+            state_next = state;
+            trans_en   = 1'b0;
+          end
+        end 
+        endcase
+    end else begin
+        state_next  = state;
+        trans_en    = 1'b0;
+        buf_en      = (state == READY)? 1'b1:1'b0;
+        i_vld_en    = (state == READY)? 1'b1:1'b0;
+    end
+end
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        state <= READY;
+    end else begin
+        state <= state_next;
+    end
+end
+//counter
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      count <= 0;
+    end else if (i_vld & i_rdy) begin
+      count <= 0;
+    end else begin
+      count <= count + 1;
+    end
+end
 
 always @(posedge clk or negedge rst_n) begin
-    if(!rst_n)begin
-        pip0_valid  <= 1'b0;
-        pip0_mode   <= 2'd0;
-        pip0_ai     <= {(pDATA_WIDTH){1'b0}};
-        pip0_bi     <= {(pDATA_WIDTH){1'b0}};
-        pip0_gm     <= {(pDATA_WIDTH){1'b0}};
+    if (!rst_n) begin
+      mode_state <= mode_FFT;
+    end else if (trans_en) begin
+      mode_state <= mode;
     end else begin
-        pip0_valid  <= i_vld;
-        pip0_mode   <= mode ;
-        pip0_ai     <= ai   ; 
-        pip0_bi     <= bi   ;
-        pip0_gm     <= gm   ;
-
+      mode_state <= mode_state;
     end
 end
+assign i_rdy = (state == READY)? 1'b1:1'b0;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                              DECODE                                                       //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-assign pip0_a_re  = pip0_ai [(pFP_WIDTH*2-1) :0];
-assign pip0_a_im  = pip0_ai [(pFP_WIDTH-1)   :0];
-assign pip0_b_re  = pip0_bi [(pFP_WIDTH*2-1) :0];
-assign pip0_b_im  = pip0_bi [(pFP_WIDTH-1)   :0];
-assign Cmul_valid = (pip0_mode == FFT)?  1'b1 : 1'b0;
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                       floating point adder 1                                              //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-assign pip0_a_im_neg = { (~FFT_a_im[pFP_WIDTH-1]) , FFT_a_im[(pFP_WIDTH-2) : 0]} ;  // * inv the sign bit of a_im ( -a_im ).
-assign pip0_b_im_neg = { (~FFT_b_im[pFP_WIDTH-1]) , FFT_b_im[(pFP_WIDTH-2) : 0]} ;  // * inv the sign bit of b_re ( -b_re ).
-
-fp_add   fp_add_01( .in_A( pip0_b_re ) , .in_B( pip0_b_im )     , .clk( clk ) , .rst_n( rst_n )  , .in_valid( Cmul_valid )  , .result( br_add_bi ) , .out_valid( fp_add_ready[0] ));
-fp_add   fp_add_02( .in_A( pip0_a_re ) , .in_B( pip0_a_im_neg ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( Cmul_valid )  , .result( ar_sub_ai ) , .out_valid( fp_add_ready[1] ));
-fp_add   fp_add_03( .in_A( pip0_b_re ) , .in_B( pip0_b_im_neg ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( Cmul_valid )  , .result( br_sub_bi ) , .out_valid( fp_add_ready[2] ));
-
-integer i ;
-
-always @(posedge clk or negedge rst_n)begin
-    if(!rst_n)begin
-        for(i=0 ; i< FP_ADD_LATENCY ; i=i+1)begin        
-            a_reg[i]     <= {(pDATA_WIDTH){1'b0}};
-            b_reg[i]     <= {(pDATA_WIDTH){1'b0}};
-            mode_reg[i]  <= 2'd0;
-        end
+//==================================================================================//
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      buf_ai    <= {(pDATA_WIDTH){1'b0}};
+      buf_bi    <= {(pDATA_WIDTH){1'b0}};
+      buf_gm    <= {(pDATA_WIDTH){1'b0}};
+      buf_i_vld <= 1'b0;
+    end else if (buf_en) begin
+      buf_ai    <= ai;
+      buf_bi    <= bi;
+      buf_gm    <= gm;
+      buf_i_vld <= i_vld & i_rdy;
     end else begin
-        a_reg[0]         <= pip0_ai  ;
-        b_reg[0]         <= pip0_bi  ;
-        mode_reg[0]      <= pip0_mode;
-        for(i=1 ; i< FP_ADD_LATENCY ; i=i+1)begin        
-            a_reg[i]     <= a_reg[i-1]   ;
-            b_reg[i]     <= b_reg[i-1]   ;
-            mode_reg[i]  <= mode_reg[i-1];
-        end
-
+      buf_ai    <= buf_ai;
+      buf_bi    <= buf_bi;
+      buf_gm    <= buf_gm;
+      buf_i_vld <= buf_i_vld;
     end
 end
-
-// * specify a_re 、 a_im 、 b_re 、 b_im from last reg of a_reg、 b_reg
-assign a_re_reg = a_reg[FP_ADD_LATENCY-1][(pFP_WIDTH*2-1) : pFP_WIDTH];
-assign a_im_reg = a_reg[FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
-assign b_re_reg = b_reg[FP_ADD_LATENCY-1][(pFP_WIDTH*2-1) : pFP_WIDTH];
-assign b_im_reg = b_reg[FP_ADD_LATENCY-1][(pFP_WIDTH-1)   : 0];
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                           mul_16_array for fp mul or int  mul (shared)                                   //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//-----------------------------------------------------------------------------------------------------------//      
-// * Use leading bit of mode to analyze operation type .                                                     //
-//   If leading is "1" , we do FFT floating point operate.                                                   //
-//   If leading is "0" , we do NTT integer operate.                                                          //
-//                                                                                                           //
-// * While doing FFT operation we feed data type { 11 , hidden_bit , mantissa} into mul_16 array.            //
-//   (As IEEE 754 format : If exponent all zero ,hidden_bit will be 0 . Others will be 1 ).                  //
-//                                                                                                           //
-// * While doing NTT operation we feed data typr {a3 , a2 , a1 , a0} into mul_16 array.                      //
-//-----------------------------------------------------------------------------------------------------------//
-
-localparam mul_array_FFT = 1'b1;
-localparam mul_array_NTT = 1'b0;
-
-assign array_in_valid    = fp_add_ready[0];
-
-assign hidden_br_add_bi  = |(br_add_bi [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]) ;
-assign hidden_a_im       = |(a_re_reg  [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]); 
-assign hidden_ar_sub_ai  = |(ar_sub_ai [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]);
-assign hidden_b_im       = |(b_im_reg  [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]);
-assign hidden_br_sub_bi  = |(br_sub_bi [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]);
-assign hidden_a_re       = |(a_re_reg  [(pFP_WIDTH-2) : pMANTISSA_WIDTH ]);       
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////   Change following assignment to feed other operand into mul_16 array   //////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-assign array_in_A0       = {{(pFP_WIDTH - pMANTISSA_WIDTH -1 ){1'b0}} , hidden_br_add_bi , br_add_bi [(pMANTISSA_WIDTH-1):0]} ;
-assign array_in_A1       = {{(pFP_WIDTH - pMANTISSA_WIDTH -1 ){1'b0}} , hidden_a_im      , a_im_reg  [(pMANTISSA_WIDTH-1):0]};
-assign array_in_B0       = (mode_reg[FP_ADD_LATENCY-1][1] == mul_array_FFT)? {{(pFP_WIDTH - pMANTISSA_WIDTH -1 ){1'b0}} , hidden_ar_sub_ai , ar_sub_ai [(pMANTISSA_WIDTH-1):0]} : a_reg[(pNTT_WIDTH*4-1) : 0];                
-assign array_in_B1       = (mode_reg[FP_ADD_LATENCY-1][1] == mul_array_FFT)? {{(pFP_WIDTH - pMANTISSA_WIDTH -1 ){1'b0}} , hidden_b_im      , b_im_reg  [(pMANTISSA_WIDTH-1):0]} : b_reg[(pNTT_WIDTH*4-1) : 0];                   
-assign array_in_C0       = (mode_reg[FP_ADD_LATENCY-1][1] == mul_array_FFT)? {{(pFP_WIDTH - pMANTISSA_WIDTH -1 ){1'b0}} , hidden_br_sub_bi , br_sub_bi [(pMANTISSA_WIDTH-1):0]} : a_reg[(pNTT_WIDTH*8-1) : (pNTT_WIDTH*4)];
-assign array_in_C1       = (mode_reg[FP_ADD_LATENCY-1][1] == mul_array_FFT)? {{(pFP_WIDTH - pMANTISSA_WIDTH -1 ){1'b0}} , hidden_a_re      , a_re_reg  [(pMANTISSA_WIDTH-1):0]} : b_reg[(pNTT_WIDTH*8-1) : (pNTT_WIDTH*4)];
- 
-
-mul16_array mul16_array_a(
-    //-------- input of mul_16_array(64bit data width)
-    .in_A( array_in_A0 ),  .in_B( array_in_A1 ),  .clk( clk ),  .rst_n( rst_n ),  .in_valid( array_in_valid ),  .out_valid( array_out_valid[0] ),
-    //-------- result from mul_16 ---------//
-    .result_00( mul_16_result_a0[0] ) , .result_01( mul_16_result_a0[1] ) , .result_02( mul_16_result_a0[2] ) , .result_03( mul_16_result_a0[3] ), 
-    .result_10( mul_16_result_a1[0] ) , .result_11( mul_16_result_a1[1] ) , .result_12( mul_16_result_a1[2] ) , .result_13( mul_16_result_a1[3] ),
-    .result_20( mul_16_result_a2[0] ) , .result_21( mul_16_result_a2[1] ) , .result_22( mul_16_result_a2[2] ) , .result_23( mul_16_result_a2[3] ),
-    .result_30( mul_16_result_a3[0] ) , .result_31( mul_16_result_a3[1] ) , .result_32( mul_16_result_a3[2] ) , .result_33( mul_16_result_a3[3] ));
-
-mul16_array mul16_array_b(
-    .in_A( array_in_B0 ),  .in_B( array_in_B1 ),  .clk( clk ),  .rst_n( rst_n ),  .in_valid( array_in_valid ),  .out_valid( array_out_valid[1] ),
-    .result_00( mul_16_result_b0[0] ) , .result_01( mul_16_result_b0[1] ) , .result_02( mul_16_result_b0[2] ) , .result_03( mul_16_result_b0[3] ), 
-    .result_10( mul_16_result_b1[0] ) , .result_11( mul_16_result_b1[1] ) , .result_12( mul_16_result_b1[2] ) , .result_13( mul_16_result_b1[3] ),
-    .result_20( mul_16_result_b2[0] ) , .result_21( mul_16_result_b2[1] ) , .result_22( mul_16_result_b2[2] ) , .result_23( mul_16_result_b2[3] ),
-    .result_30( mul_16_result_b3[0] ) , .result_31( mul_16_result_b3[1] ) , .result_32( mul_16_result_b3[2] ) , .result_33( mul_16_result_b3[3] )
-);
-
-mul16_array mul16_array_c(
-    .in_A( array_in_C0 ),  .in_B( array_in_C1 ),  .clk( clk ),  .rst_n( rst_n ),  .in_valid( array_in_valid ),  .out_valid( array_out_valid[2] ),
-    .result_00( mul_16_result_c0[0] ) , .result_01( mul_16_result_c0[1] ) , .result_02( mul_16_result_c0[2] ) , .result_03( mul_16_result_c0[3] ), 
-    .result_10( mul_16_result_c1[0] ) , .result_11( mul_16_result_c1[1] ) , .result_12( mul_16_result_c1[2] ) , .result_13( mul_16_result_c1[3] ),
-    .result_20( mul_16_result_c2[0] ) , .result_21( mul_16_result_c2[1] ) , .result_22( mul_16_result_c2[2] ) , .result_23( mul_16_result_c2[3] ),
-    .result_30( mul_16_result_c3[0] ) , .result_31( mul_16_result_c3[1] ) , .result_32( mul_16_result_c3[2] ) , .result_33( mul_16_result_c3[3] )
-);
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                         mantissa mul operator   (Wallace tree for fp_mul out mantissa)                   //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-assign wallace_mode = 1'b0;
-assign wallace_in   = {(pWALLACE_WIDTH){1'b0}};
-
-wallace_131 Wallace_tree_a(
-    .clk( clk )                           , .rst_n( rst_n )                       , .mode( wallace_mode ) ,     // * mode 0 for partial product adder , mode 1 for long operand adder
-    .in_valid( array_out_valid[0] )       , .out_valid( wallace_out_valid[0]  )   , .result( wallace_out_A ),  
-//----------------------------- data input of mul operation(from mul_16_array) -----------------------------------------//
-    .mul_result_00( mul_16_result_a0[0] ) , .mul_result_01( mul_16_result_a0[1] ) , .mul_result_02( mul_16_result_a0[2] ) , .mul_result_03( mul_16_result_a0[3] ) ,    
-    .mul_result_10( mul_16_result_a1[0] ) , .mul_result_11( mul_16_result_a1[1] ) , .mul_result_12( mul_16_result_a1[2] ) , .mul_result_13( mul_16_result_a1[3] ) ,    
-    .mul_result_20( mul_16_result_a2[0] ) , .mul_result_21( mul_16_result_a2[1] ) , .mul_result_22( mul_16_result_a2[2] ) , .mul_result_23( mul_16_result_a2[3] ) ,
-    .mul_result_30( mul_16_result_a3[0] ) , .mul_result_31( mul_16_result_a3[1] ) , .mul_result_32( mul_16_result_a3[2] ) , .mul_result_33( mul_16_result_a3[3] ) ,  
-//------------------------------ data input of add operation(131bit add) -----------------------------------------------//
-    .in_A( wallace_in ),                  , .in_B( wallace_in )           
-);
-
-wallace_131 Wallace_tree_b(
-    .clk( clk )                           , .rst_n( rst_n )                       , .mode( wallace_mode ) ,     
-    .in_valid( array_out_valid[1] )       , .out_valid( wallace_out_valid[1] )    , .result( wallace_out_B ),  
-    .mul_result_00( mul_16_result_b0[0] ) , .mul_result_01( mul_16_result_b0[1] ) , .mul_result_02( mul_16_result_b0[2] ) , .mul_result_03( mul_16_result_b0[3] ) ,    
-    .mul_result_10( mul_16_result_b1[0] ) , .mul_result_11( mul_16_result_b1[1] ) , .mul_result_12( mul_16_result_b1[2] ) , .mul_result_13( mul_16_result_b1[3] ) ,    
-    .mul_result_20( mul_16_result_b2[0] ) , .mul_result_21( mul_16_result_b2[1] ) , .mul_result_22( mul_16_result_b2[2] ) , .mul_result_23( mul_16_result_b2[3] ) ,
-    .mul_result_30( mul_16_result_b3[0] ) , .mul_result_31( mul_16_result_b3[1] ) , .mul_result_32( mul_16_result_b3[2] ) , .mul_result_33( mul_16_result_b3[3] ) ,  
-    .in_A( wallace_in ),                  , .in_B( wallace_in )           
-);
-
-wallace_131 Wallace_tree_c(
-    .clk( clk )                           , .rst_n( rst_n )                       , .mode( wallace_mode ) ,  
-    .in_valid( array_out_valid[2] )       , .out_valid( wallace_out_valid[2] )    , .result( wallace_out_C ),  
-    .mul_result_00( mul_16_result_c0[0] ) , .mul_result_01( mul_16_result_c0[1] ) , .mul_result_02( mul_16_result_c0[2] ) , .mul_result_03( mul_16_result_c0[3] ) ,    
-    .mul_result_10( mul_16_result_c1[0] ) , .mul_result_11( mul_16_result_c1[1] ) , .mul_result_12( mul_16_result_c1[2] ) , .mul_result_13( mul_16_result_c1[3] ) ,    
-    .mul_result_20( mul_16_result_c2[0] ) , .mul_result_21( mul_16_result_c2[1] ) , .mul_result_22( mul_16_result_c2[2] ) , .mul_result_23( mul_16_result_c2[3] ) ,
-    .mul_result_30( mul_16_result_c3[0] ) , .mul_result_31( mul_16_result_c3[1] ) , .mul_result_32( mul_16_result_c3[2] ) , .mul_result_33( mul_16_result_c3[3] ) ,  
-    .in_A( wallace_in ),                  , .in_B( wallace_in )           
-);
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                          Exponent operator                                               //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-assign exp_A0 = br_add_bi [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * b_re + b_im
-assign exp_A1 = a_im_reg  [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * im part of a
-assign exp_B0 = ar_sub_ai [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * a_re - a_im
-assign exp_B1 = b_im_reg  [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * im part of b              
-assign exp_C0 = br_sub_bi [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * b_re - b_im
-assign exp_C1 = a_re_reg  [(pMANTISSA_WIDTH + pEXP_WIDTH - 1) :pMANTISSA_WIDTH];    // * re part of a
-
-fmul_exp  exponent_op_A( .clk( clk ) , .rst_n( rst_n ), .in_valid( fp_add_ready[0] ), .exp_A( exp_A0 ), .exp_B( exp_A1 ),  .exp_o( exp_A_out ), .out_inf( inf_A ) , .out_valid( exp_ready_A ));
-fmul_exp  exponent_op_B( .clk( clk ) , .rst_n( rst_n ), .in_valid( fp_add_ready[1] ), .exp_A( exp_B0 ), .exp_B( exp_B1 ),  .exp_o( exp_B_out ), .out_inf( inf_B ) , .out_valid( exp_ready_B ));
-fmul_exp  exponent_op_C( .clk( clk ) , .rst_n( rst_n ), .in_valid( fp_add_ready[2] ), .exp_A( exp_C0 ), .exp_B( exp_C1 ),  .exp_o( exp_C_out ), .out_inf( inf_C ) , .out_valid( exp_ready_C ));
-
-assign sign_A = (br_add_bi[pFP_WIDTH-1] ^ a_im_reg[pFP_WIDTH-1]) ;
-assign sign_B = (ar_sub_ai[pFP_WIDTH-1] ^ b_im_reg[pFP_WIDTH-1]) ;
-assign sign_C = (br_sub_bi[pFP_WIDTH-1] ^ a_re_reg[pFP_WIDTH-1]) ;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                  MUL/ADD FIFO                                                                                       //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//=====================================================================================================================================================================//
+// In this data path , use group of reg as FIFO to store some data while others are being operated :                                                                   //
+//                                                                                                                                                                     //
+// 1. MUL_FIFO :                                                                                                                                                       //
+//    * Use to store the ain while doing FFT's complex mul .                                                                                                           //
+//    * Use to store the (ain+bin) from fp_add while doing iFFT's complex mul .                                                                                        //
+//    * Use to store the ain while doing NTT's operation .                                                                                                             //
+//                                                                                                                                                                     //
+// 2. ADD_FIFO :                                                                                                                                                       //
+//    * Use to store the twiddle factor while doing iFFT's  floating point add .                                                                                       //
+//                                                                                                                                                                     //
+//=====================================================================================================================================================================//
+integer i;
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        for (i = 0; i < FFT_MUL_LATENCY; i = i + 1) begin
+          MUL_FIFO[i] <= {(pDATA_WIDTH){1'b0}};
+        end
+    end else begin
+        MUL_FIFO[0] <= (mode_state ==  mode_iFFT)? fp_add_result[0] : buf_ai;
+        for (i = 1; i < FFT_MUL_LATENCY; i = i + 1) begin
+          MUL_FIFO[i] <= MUL_FIFO[i-1];
+        end
+    end
+end
 
 always @(posedge clk or negedge rst_n) begin
-    if(!rst_n)begin
-        for(i=0 ; i<EXP_OP_LATENCY ; i=i+1)begin
-            sign_A_reg[i] <= 1'b0;
-            sign_B_reg[i] <= 1'b0;
-            sign_C_reg[i] <= 1'b0;
+    if (!rst_n) begin
+        for (i = 0; i < FP_ADD_LATENCY; i = i + 1) begin
+          ADD_FIFO[i] <= {(pDATA_WIDTH){1'b0}};
         end
     end else begin
-        sign_A_reg[0] <= sign_A; 
-        sign_B_reg[0] <= sign_B;
-        sign_C_reg[0] <= sign_C;
-        for(i=1 ; i<EXP_OP_LATENCY ; i=i+1)begin
-            sign_A_reg[i] <= sign_A_reg[i-1];
-            sign_B_reg[i] <= sign_B_reg[i-1];
-            sign_C_reg[i] <= sign_C_reg[i-1];
+        // * CONJ (W)
+        ADD_FIFO[0] <=  {buf_gm[(pFP_WIDTH*2-1) : pFP_WIDTH]  , (~buf_gm[pFP_WIDTH-1]) , buf_gm[(pFP_WIDTH-2):0]};
+        for (i = 1; i < FP_ADD_LATENCY; i = i + 1) begin
+          ADD_FIFO[i] <= ADD_FIFO[i-1];
         end
     end
 end
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                          Rounding operator                                               //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                  Multiplier operand & result                                                                        //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//=====================================================================================================================================================================//
+// * If  FFT mode , do bi * gm .                                                                                                                                       //
+// * If IFFT mode , do (ao-bi)*gm                                                                                                                                      //
+//=====================================================================================================================================================================//
+assign mul_in1       = (mode_state == mode_iFFT )?          fp_add_result[1]     : buf_bi ;
+assign mul_in2       = (mode_state == mode_iFFT )?    ADD_FIFO[FP_ADD_LATENCY-1] : buf_gm ;
+assign mul_in_valid  = (mode_state == mode_iFFT )?       fp_add_out_valid[0]     : (buf_i_vld & i_vld_en);
 
-assign frac_A_i =  wallace_out_A[(pROUNDER_FRAC_WIDTH-1) :0] ;
-assign frac_B_i =  wallace_out_B[(pROUNDER_FRAC_WIDTH-1) :0] ;
-assign frac_C_i =  wallace_out_C[(pROUNDER_FRAC_WIDTH-1) :0] ; 
+mul mul1(
+    .in_A(mul_in1),
+    .in_B(mul_in2),
+    .mode(mode_state), // * set mode = 0 to do complex mul ， mode = 1 to do int mul
+    .clk(clk),
+    .rst_n(rst_n),
+    .in_valid(mul_in_valid),
+    .result_c(mul_result_com),  
+    .result_int(mul_result_int),
+    .out_valid(mul_out_valid[0])
+);
+assign mul_result        = (mode_state[1] == 1'b0 )? mul_result_com : mul_result_int;
 
-fmul_rounder rounder_A ( .frac_i( frac_A_i ) , .exp_i( exp_A_out ) , .frac_o( frac_A_rounded ) , .exp_o( exp_A_rounded ) , .inf_case( inf_A ) , .in_valid( exp_ready_A ) , .out_valid( rounder_ready_A ) , .clk( clk ) , .rst_n( rst_n ));
-fmul_rounder rounder_B ( .frac_i( frac_B_i ) , .exp_i( exp_B_out ) , .frac_o( frac_B_rounded ) , .exp_o( exp_B_rounded ) , .inf_case( inf_B ) , .in_valid( exp_ready_B ) , .out_valid( rounder_ready_B ) , .clk( clk ) , .rst_n( rst_n ));
-fmul_rounder rounder_C ( .frac_i( frac_C_i ) , .exp_i( exp_C_out ) , .frac_o( frac_C_rounded ) , .exp_o( exp_C_rounded ) , .inf_case( inf_C ) , .in_valid( exp_ready_C ) , .out_valid( rounder_ready_C ) , .clk( clk ) , .rst_n( rst_n ));
+assign mul_result_re_inv = {~mul_result_com[(pFP_WIDTH*2-1)], mul_result_com[(pFP_WIDTH*2-2):pFP_WIDTH]};
+assign mul_result_im_inv = {~mul_result_com[(pFP_WIDTH-1)]  , mul_result_com[(pFP_WIDTH-2):0]};
+assign mul_result_inv    = {mul_result_re_inv, mul_result_im_inv} ;
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                       floating point adder 2                                              //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+assign a_result          = (mode_state[1] == 1'b0)? MUL_FIFO[(FFT_MUL_LATENCY-1)] : MUL_FIFO[(NTT_MUL_LATENCY-1)];
 
-assign FP_num_A = {sign_A_reg[EXP_OP_LATENCY-1] , exp_A_rounded , frac_A_rounded };  // num_A = a_im * (b_re + b_im)
-assign FP_num_B = {sign_B_reg[EXP_OP_LATENCY-1] , exp_B_rounded , frac_B_rounded };  // num_B = b_im * (a_re - a_im)
-assign FP_num_c = {sign_C_reg[EXP_OP_LATENCY-1] , exp_C_rounded , frac_C_rounded };  // num_C = a_re * (b_re - b_im)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                  FP_ADD operand & result                                                                            //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// select operand OF FP_ADD in FFT 、 iFFT
+assign fp_add_in_01[0] = (mode_state == mode_iFFT)?   buf_ai[(pFP_WIDTH-1) : 0]   : a_result  [(pFP_WIDTH-1):0]       ;
+assign fp_add_in_01[1] = (mode_state == mode_iFFT)?   buf_bi[(pFP_WIDTH-1) : 0]   : mul_result[(pFP_WIDTH-1):0]       ;
 
+assign fp_add_in_02[0] = (mode_state == mode_iFFT)?   buf_ai[(pFP_WIDTH*2-1) : (pFP_WIDTH)] : a_result  [(pFP_WIDTH*2-1) : (pFP_WIDTH)]      ;
+assign fp_add_in_02[1] = (mode_state == mode_iFFT)?   buf_bi[(pFP_WIDTH*2-1) : (pFP_WIDTH)] : mul_result[(pFP_WIDTH*2-1) : (pFP_WIDTH)]    ;
 
+assign fp_add_in_11[0] = (mode_state == mode_iFFT)?                              buf_ai[(pFP_WIDTH-1) : 0] : a_result[(pFP_WIDTH-1):0]         ;
+assign fp_add_in_11[1] = (mode_state == mode_iFFT)?   {(~buf_bi[pFP_WIDTH-1]) , buf_bi[(pFP_WIDTH-2) : 0]} : mul_result_inv[(pFP_WIDTH-1):0]   ;
 
-fp_add   fp_add_04( .in_A( FP_num_A ) , .in_B( FP_num_B )     , .clk( clk ) , .rst_n( rst_n )  , .in_valid( rounder_ready_A )  , .result( y_im ) , .out_valid( cmul_im_ready ));
-fp_add   fp_add_05( .in_A( FP_num_B ) , .in_B( FP_num_c )     , .clk( clk ) , .rst_n( rst_n )  , .in_valid( rounder_ready_C )  , .result( y_re ) , .out_valid( cmul_re_ready ));
+assign fp_add_in_12[0] = (mode_state == mode_iFFT)?                              buf_ai[(pFP_WIDTH*2-1) : pFP_WIDTH]  : a_result[(pFP_WIDTH*2-1):(pFP_WIDTH)]       ;
+assign fp_add_in_12[1] = (mode_state == mode_iFFT)?  {(~buf_bi[pFP_WIDTH*2-1]) , buf_bi[(pFP_WIDTH*2-2) : pFP_WIDTH]} : mul_result_inv[(pFP_WIDTH*2-1):(pFP_WIDTH)] ;
 
+assign fp_add_in_valid = (mode_state == mode_iFFT)?  (buf_i_vld & i_vld_en) : mul_out_valid[0] ;
 
+//* In FFT  mode these two fp_add do (  ain + b_in*g  ) 
+//* In IFFT mode these two fp_add do (  ain + bin     )
+fp_add   fp_add_01( .in_A( fp_add_in_01[0] ) , .in_B( fp_add_in_01[1] ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( fp_add_in_valid )  , .result( fp_add_result[0][(pFP_WIDTH-1):0] )             , .out_valid( fp_add_out_valid[0] ));
+fp_add   fp_add_02( .in_A( fp_add_in_02[0] ) , .in_B( fp_add_in_02[1] ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( fp_add_in_valid )  , .result( fp_add_result[0][(pFP_WIDTH*2-1):(pFP_WIDTH)] ) , .out_valid( fp_add_out_valid[1] ));
 
-
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                         OUTPUT INTERFACE                                                 //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
+//* In FFT  mode these two fp_add do (  ain - bin*g  )
+//* In IFFT mode these two fp_add do (  ain - bin    )
+fp_add   fp_add_11( .in_A( fp_add_in_11[0] ) , .in_B( fp_add_in_11[1] ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( fp_add_in_valid )  , .result( fp_add_result[1][(pFP_WIDTH-1):0] )             , .out_valid( fp_add_out_valid[2] ));
+fp_add   fp_add_12( .in_A( fp_add_in_12[0] ) , .in_B( fp_add_in_12[1] ) , .clk( clk ) , .rst_n( rst_n )  , .in_valid( fp_add_in_valid )  , .result( fp_add_result[1][(pFP_WIDTH*2-1):(pFP_WIDTH)] ) , .out_valid( fp_add_out_valid[3] ));
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                  iFFT's div operation                                                                               //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//=====================================================================================================================================================================//
+//  * IFFT_result[1] = ((ai+bi)*conj(w))/2                                                                                                                             //
+//  * IFFT_result[0] = (ai+bi)/2                                                                                                                                       //
+//=====================================================================================================================================================================//
+// * exponent of complex (ain + bin)/2
+assign IFFT_result_exp_im [0] = ( (~(|MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]))   || (&MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]  ))?  MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]   : (MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]   - 1'b1 );
+assign IFFT_result_exp_re [0] = ( (~(|MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)])) || (&MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)]))?  MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)] : (MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)] - 1'b1 );
+// * exponent of complex (ain - bin) * conj(w)/2
+assign IFFT_result_exp_im [1] = ( (~(|mul_result[(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]))   || (&mul_result[(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]   ))?   mul_result[(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]   : (mul_result[(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]   - 1'b1);
+assign IFFT_result_exp_re [1] = ( (~(|mul_result[(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)])) || (&mul_result[(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)] ))?   mul_result[(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)] : (mul_result[(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)] - 1'b1);
+// * fraction of complex (ain + bin)/2
+assign IFFT_result_frac_im[0] = (|MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]  )?  ((|MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-2):(pFP_WIDTH-pEXP_WIDTH)])?      MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-pEXP_WIDTH-2):0]            : {1'b1 , MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-pEXP_WIDTH-2):1]}                ) : {1'b0 , MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-pEXP_WIDTH-2):1] };
+assign IFFT_result_frac_re[0] = (|MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)])?  ((|MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH)])?  MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-pEXP_WIDTH-2): pFP_WIDTH] : {1'b1 , MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-pEXP_WIDTH-2): (pFP_WIDTH+1) ]}) : {1'b0 , MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-pEXP_WIDTH-2): (pFP_WIDTH+1)]};
+// * fraction of complex (ain - bin) * conj(w)/2
+assign IFFT_result_frac_im[1] = (|mul_result[(pFP_WIDTH-2)  :(pFP_WIDTH-pEXP_WIDTH-1)]  )?     ((|mul_result[(pFP_WIDTH-2):(pFP_WIDTH-pEXP_WIDTH)]    )?  mul_result[(pFP_WIDTH-pEXP_WIDTH-2):0]            : {1'b1 , mul_result[(pFP_WIDTH-pEXP_WIDTH-2):1]} )                : {1'b0 , mul_result[(pFP_WIDTH-pEXP_WIDTH-2):1]} ;
+assign IFFT_result_frac_re[1] = (|mul_result[(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH-1)])?     ((|mul_result[(pFP_WIDTH*2-2):(pFP_WIDTH*2-pEXP_WIDTH)])?  mul_result[(pFP_WIDTH*2-pEXP_WIDTH-2): pFP_WIDTH] : {1'b1 , mul_result[(pFP_WIDTH*2-pEXP_WIDTH-2): (pFP_WIDTH+1) ]}) : {1'b0 , mul_result[(pFP_WIDTH*2-pEXP_WIDTH-2): (pFP_WIDTH+1) ]};
+// * combine into complex format {real , img}
+assign cmul_result_ifft[0]    = {MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH*2-1)] , IFFT_result_exp_re[0] , IFFT_result_frac_re[0] , MUL_FIFO[FFT_MUL_LATENCY-1][(pFP_WIDTH-1)] , IFFT_result_exp_im[0] , IFFT_result_frac_im[0] };
+assign cmul_result_ifft[1]    = {mul_result[(pFP_WIDTH*2-1)]                  , IFFT_result_exp_re[1] , IFFT_result_frac_re[1] , mul_result[(pFP_WIDTH-1)]                  , IFFT_result_exp_im[1] , IFFT_result_frac_im[1] };
 
-    // complex mul & add & sub for FFT/iFFT
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                  MONT_ADD in NTT/iNTT                                                                               //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+mont_add mont_add_01(.in_A(mul_result[(pNTT_WTDTH-1):0])               , .in_B(a_result[(pNTT_WTDTH-1)  :0])                , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH-1)    :0])             , .out_valid(mont_add_valid_o0[0]));
+mont_add mont_add_02(.in_A(mul_result[(pNTT_WTDTH*2-1):(pNTT_WTDTH)])  , .in_B(a_result[(pNTT_WTDTH*2-1):(pNTT_WTDTH)])     , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*2-1)  :(pNTT_WTDTH)])  , .out_valid(mont_add_valid_o0[1]));
+mont_add mont_add_03(.in_A(mul_result[(pNTT_WTDTH*3-1):(2*pNTT_WTDTH)]), .in_B(a_result[(pNTT_WTDTH*3-1):(pNTT_WTDTH*2)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*3-1)  :(pNTT_WTDTH*2)]), .out_valid(mont_add_valid_o0[2]));
+mont_add mont_add_04(.in_A(mul_result[(pNTT_WTDTH*4-1):(3*pNTT_WTDTH)]), .in_B(a_result[(pNTT_WTDTH*4-1):(pNTT_WTDTH*3)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*4-1)  :(pNTT_WTDTH*3)]), .out_valid(mont_add_valid_o0[3]));
+mont_add mont_add_05(.in_A(mul_result[(pNTT_WTDTH*5-1):(4*pNTT_WTDTH)]), .in_B(a_result[(pNTT_WTDTH*5-1):(pNTT_WTDTH*4)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*5-1)  :(pNTT_WTDTH*4)]), .out_valid(mont_add_valid_o0[4]));
+mont_add mont_add_06(.in_A(mul_result[(pNTT_WTDTH*6-1):(5*pNTT_WTDTH)]), .in_B(a_result[(pNTT_WTDTH*6-1):(pNTT_WTDTH*5)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*6-1)  :(pNTT_WTDTH*5)]), .out_valid(mont_add_valid_o0[5]));
+mont_add mont_add_07(.in_A(mul_result[(pNTT_WTDTH*7-1):(6*pNTT_WTDTH)]), .in_B(a_result[(pNTT_WTDTH*7-1):(pNTT_WTDTH*6)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*7-1)  :(pNTT_WTDTH*6)]), .out_valid(mont_add_valid_o0[6]));
+mont_add mont_add_08(.in_A(mul_result[(pNTT_WTDTH*8-1):(7*pNTT_WTDTH)]), .in_B(a_result[(pNTT_WTDTH*8-1):(pNTT_WTDTH*7)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[0]), .result(mont_add_result[(pNTT_WTDTH*8-1)  :(pNTT_WTDTH*7)]), .out_valid(mont_add_valid_o0[7]));
+
+mont_sub mont_sub_11(.in_A(a_result[(pNTT_WTDTH-1)  :0])               , .in_B(mul_result[(pNTT_WTDTH-1):0])                , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH-1)    :0])             , .out_valid(mont_add_valid_o1[0]));
+mont_sub mont_sub_12(.in_A(a_result[(pNTT_WTDTH*2-1):(pNTT_WTDTH)])    , .in_B(mul_result[(pNTT_WTDTH*2-1):(pNTT_WTDTH)])   , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*2-1)  :(pNTT_WTDTH)])  , .out_valid(mont_add_valid_o1[1]));
+mont_sub mont_sub_13(.in_A(a_result[(pNTT_WTDTH*3-1):(pNTT_WTDTH*2)])  , .in_B(mul_result[(pNTT_WTDTH*3-1):(2*pNTT_WTDTH)]) , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*3-1)  :(pNTT_WTDTH*2)]), .out_valid(mont_add_valid_o1[2]));
+mont_sub mont_sub_14(.in_A(a_result[(pNTT_WTDTH*4-1):(pNTT_WTDTH*3)])  , .in_B(mul_result[(pNTT_WTDTH*4-1):(3*pNTT_WTDTH)]) , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*4-1)  :(pNTT_WTDTH*3)]), .out_valid(mont_add_valid_o1[3]));
+mont_sub mont_sub_15(.in_A(a_result[(pNTT_WTDTH*5-1):(pNTT_WTDTH*4)])  , .in_B(mul_result[(pNTT_WTDTH*5-1):(4*pNTT_WTDTH)]) , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*5-1)  :(pNTT_WTDTH*4)]), .out_valid(mont_add_valid_o1[4]));
+mont_sub mont_sub_16(.in_A(a_result[(pNTT_WTDTH*6-1):(pNTT_WTDTH*5)])  , .in_B(mul_result[(pNTT_WTDTH*6-1):(5*pNTT_WTDTH)]) , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*6-1)  :(pNTT_WTDTH*5)]), .out_valid(mont_add_valid_o1[5]));
+mont_sub mont_sub_17(.in_A(a_result[(pNTT_WTDTH*7-1):(pNTT_WTDTH*6)])  , .in_B(mul_result[(pNTT_WTDTH*7-1):(6*pNTT_WTDTH)]) , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*7-1)  :(pNTT_WTDTH*6)]), .out_valid(mont_add_valid_o1[6]));
+mont_sub mont_sub_18(.in_A(a_result[(pNTT_WTDTH*8-1):(pNTT_WTDTH*7)])  , .in_B(mul_result[(pNTT_WTDTH*8-1):(7*pNTT_WTDTH)]) , .clk(clk), .rst_n(rst_n), .in_valid(mul_out_valid[1]), .result(mont_sub_result[(pNTT_WTDTH*8-1)  :(pNTT_WTDTH*7)]), .out_valid(mont_add_valid_o1[7]));
+
+// always @(*) begin
+//     mont_add_intt[0] = {1'b0, mont_add_result[(pNTT_WTDTH-1)    :1]};
+//     mont_add_intt[1] = {1'b0, mont_add_result[(pNTT_WTDTH*2-1)  :(pNTT_WTDTH+1)]};
+//     mont_add_intt[2] = {1'b0, mont_add_result[(pNTT_WTDTH*3-1)  :(pNTT_WTDTH*2+1)]};
+//     mont_add_intt[3] = {1'b0, mont_add_result[(pNTT_WTDTH*4-1)  :(pNTT_WTDTH*3+1)]};
+//     mont_add_intt[4] = {1'b0, mont_add_result[(pNTT_WTDTH*5-1)  :(pNTT_WTDTH*4+1)]};
+//     mont_add_intt[5] = {1'b0, mont_add_result[(pNTT_WTDTH*6-1)  :(pNTT_WTDTH*5+1)]};
+//     mont_add_intt[6] = {1'b0, mont_add_result[(pNTT_WTDTH*7-1)  :(pNTT_WTDTH*6+1)]};
+//     mont_add_intt[7] = {1'b0, mont_add_result[(pNTT_WTDTH*8-1)  :(pNTT_WTDTH*7+1)]};
+// end
+// always @(*) begin
+//     mont_sub_intt[0] = {1'b0, mont_sub_result[(pNTT_WTDTH-1)    :1]};
+//     mont_sub_intt[1] = {1'b0, mont_sub_result[(pNTT_WTDTH*2-1)  :(pNTT_WTDTH+1)]};
+//     mont_sub_intt[2] = {1'b0, mont_sub_result[(pNTT_WTDTH*3-1)  :(pNTT_WTDTH*2+1)]};
+//     mont_sub_intt[3] = {1'b0, mont_sub_result[(pNTT_WTDTH*4-1)  :(pNTT_WTDTH*3+1)]};
+//     mont_sub_intt[4] = {1'b0, mont_sub_result[(pNTT_WTDTH*5-1)  :(pNTT_WTDTH*4+1)]};
+//     mont_sub_intt[5] = {1'b0, mont_sub_result[(pNTT_WTDTH*6-1)  :(pNTT_WTDTH*5+1)]};
+//     mont_sub_intt[6] = {1'b0, mont_sub_result[(pNTT_WTDTH*7-1)  :(pNTT_WTDTH*6+1)]};
+//     mont_sub_intt[7] = {1'b0, mont_sub_result[(pNTT_WTDTH*8-1)  :(pNTT_WTDTH*7+1)]};
+// end
+// assign mont_add_intt_result = {mont_add_intt[7], mont_add_intt[6], mont_add_intt[5], mont_add_intt[4], mont_add_intt[3], mont_add_intt[2], mont_add_intt[1], mont_add_intt[0]};
+// assign mont_sub_intt_result = {mont_sub_intt[7], mont_sub_intt[6], mont_sub_intt[5], mont_sub_intt[4], mont_sub_intt[3], mont_sub_intt[2], mont_sub_intt[1], mont_sub_intt[0]};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                      Output interface                                                                               //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+always @(*) begin
+    case (mode_state) 
+    mode_FFT: begin //div 2 in each stage
+        ao_buf[0] = fp_add_result[0];
+        bo_buf[0] = fp_add_result[1];
+    end
+    mode_iFFT: begin //execute in exponent module?
+        ao_buf[0] = cmul_result_ifft[0];
+        bo_buf[0] = cmul_result_ifft[1];
+    end
+    mode_NTT: begin
+        ao_buf[0] = mont_add_result;
+        bo_buf[0] = mont_sub_result;
+    end
+    mode_iNTT: begin //div N in the last stage
+        ao_buf[0] = mont_add_result;
+        bo_buf[0] = mont_sub_result;
+    end
+    endcase
+    o_vld_buf[0] = (mode_state[1] == 1'b0)? ((mode_state[0])?   mul_out_valid[0] : (fp_add_out_valid[0])) : mont_add_valid_o0[0] ;
+end
+
+always @(posedge clk or negedge rst_n) begin
+  if (!rst_n) begin
+    ao_buf[1]    <= {(pDATA_WIDTH){1'b0}};
+    bo_buf[1]    <= {(pDATA_WIDTH){1'b0}};
+    o_vld_buf[1] <= 1'b0;
+    // ao_buf[2]    <= {(pDATA_WIDTH){1'b0}};
+    // bo_buf[2]    <= {(pDATA_WIDTH){1'b0}};
+    // o_vld_buf[2] <= 1'b0;
+  end else begin
+    ao_buf[1]    <= ao_buf[0];
+    bo_buf[1]    <= bo_buf[0];
+    o_vld_buf[1] <= o_vld_buf[0];
+    // ao_buf[2]    <= ao_buf[1];
+    // bo_buf[2]    <= bo_buf[1];
+    // o_vld_buf[2] <= o_vld_buf[1];
+  end
+end
+assign ao    = ao_buf[1];
+assign bo    = bo_buf[1];
+assign o_vld = o_vld_buf[1];
 
 
+// assign ao = (mode_state[1] == 1'b0)? cmul_result[0] : mont_add_result;
+// assign bo = (mode_state[1] == 1'b0)? cmul_result[1] : mont_sub_result;
 
-    // Complex Multiplication:
-    // y_re = (a_re * b_re) - (a_im * b_im)
-    // y_im = (a_re * b_im) + (a_im * b_re)
-    // Rewrite as:
-    // y_re = a_re * (b_re - b_im) + b_im * (a_re - a_im)
-    // y_im = a_im * (b_re + b_im) + b_im * (a_re - a_im)
-    // It will reduce the mul usage from 4 to 3 since we reuse [b_im * (a_re - a_im)]
-
-    // montgomery mul & add & sub for NTT/iNTT
 
 endmodule
 
