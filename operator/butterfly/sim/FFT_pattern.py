@@ -296,8 +296,8 @@ def ieee754_double_to_hex(sign, exponent, mantissa):
 #                               Generate pattern and  write into .txt                                   #
 #########################################################################################################
 
-pattern_num = 200
-with open("a_in.dat", "w") as ain, open("b_in.dat", "w") as bii , open("g_in.dat", "w") as gin, open("golden_a.dat", "w") as aout , open("golden_b.dat", "w") as bout ,open("a_float.dat", "w") as ai_fp, open("b_float.dat", "w") as bi_fp, open("golden_float.dat", "w") as gi_fp , open("golden_a_float.dat", "w") as aout_fp , open("golden_b_float.dat", "w") as bout_fp:
+pattern_num = 20000
+with open("a_in.dat", "w") as ain, open("b_in.dat", "w") as bii , open("g_in.dat", "w") as gin, open("golden_a.dat", "w") as aout , open("golden_b.dat", "w") as bout ,open("a_float.dat", "w") as ai_fp, open("b_float.dat", "w") as bi_fp, open("gin_float.dat", "w") as gi_fp , open("golden_a_float.dat", "w") as aout_fp , open("golden_b_float.dat", "w") as bout_fp:
 
     for i in range(pattern_num):
         ###############################
