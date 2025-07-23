@@ -390,18 +390,20 @@ with open("a_in.dat", "w") as ain, open("b_in.dat", "w") as bii , open("g_in.dat
         ############################################################################################
         #                    Calculate complex ( a + b ) 、 ( a - b )                              #                                       
         ############################################################################################
-        sa_result_re , ea_result_re , ma_result_re = fp64_add(ma_re, mb_re, ea_re, eb_re , sa_re , sb_re )   # re part of a+b
-        sa_result_im , ea_result_im , ma_result_im = fp64_add(ma_im, mb_im, ea_im, eb_im , sa_im , sb_im )   # im part of a+b
-        
         if(sb_re == 1) :
             sb_re_neg = 0
         else :
-            sb_re_nef = 1
+            sb_re_neg = 1
         
         if(sb_im ==1) :
             sb_im_neg = 0
         else :
-            sb_im_neg = 1               
+            sb_im_neg = 1  
+
+        sa_result_re , ea_result_re , ma_result_re = fp64_add(ma_re, mb_re, ea_re, eb_re , sa_re , sb_re )   # re part of a+b
+        sa_result_im , ea_result_im , ma_result_im = fp64_add(ma_im, mb_im, ea_im, eb_im , sa_im , sb_im )   # im part of a+b
+        
+             
         
         s_num_b_re , e_num_b_re , m_num_b_re = fp64_add(ma_re, mb_re, ea_re, eb_re , sa_re , sb_re_neg )  # re part of a-b
         s_num_b_im , e_num_b_im , m_num_b_im = fp64_add(ma_im, mb_im, ea_im, eb_im , sa_im , sb_im_neg )  # im part of a-b
